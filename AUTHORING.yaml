@@ -1,0 +1,98 @@
+version: 1
+approval: KCNA-LESSON-PLAN.md approved; reading-only correction 2026-10-10
+course:
+  id: ATS039
+  certification:
+    name: Kubernetes and Cloud Native Associate
+    code: KCNA
+    provider: CNCF / Linux Foundation
+    domain: Cloud Native Application Delivery
+    weight: 16
+    competencies:
+    - Application Delivery
+    - Debugging
+defaults:
+  playground: false
+  module_lab: false
+  capstone: false
+  section_quiz: true
+  final_quiz: true
+sections:
+- id: section-010
+  title: Application Delivery
+  curriculum_item: Application Delivery
+  modules:
+  - id: module-01
+    title: Build And Release Pipelines
+    objectives:
+    - Trace source changes through build, checks and artifact publication.
+    - Explain what continuous integration checks.
+    - Distinguish continuous delivery from continuous deployment.
+    - Relate release identity to an immutable artifact.
+    outline:
+    - Source Changes And Build Evidence
+    - Delivery, Deployment And Promotion Decisions
+    playground: false
+    module_lab: false
+    diagrams: []
+  - id: module-02
+    title: GitOps And Deployment Configuration
+    objectives:
+    - Explain declarative, versioned desired state.
+    - Describe pull-based reconciliation and drift correction.
+    - Compare Helm templating with Kustomize overlays.
+    - Identify what a GitOps controller cannot infer from repository state.
+    outline:
+    - GitOps Reconciliation And Drift
+    - Helm, Kustomize And Configuration Rendering
+    playground: false
+    module_lab: false
+    diagrams: []
+  - id: module-03
+    title: Safe Application Releases
+    objectives:
+    - Explain rolling update behavior and readiness gates.
+    - Compare rolling, blue-green and canary strategies.
+    - Identify evidence needed to promote or reverse a release.
+    - Explain compatibility limits of rollback.
+    outline:
+    - Rolling Updates And Health Gates
+    - Blue-Green, Canary And Release Evidence
+    playground: false
+    module_lab: false
+    diagrams: []
+  capstone: false
+  section_quiz: true
+- id: section-020
+  title: Debugging
+  curriculum_item: Debugging
+  modules:
+  - id: module-01
+    title: Diagnosing Application Failures
+    objectives:
+    - Distinguish process failure from application response failure.
+    - Use logs and termination evidence to form a diagnosis.
+    - Relate configuration and dependency access to application behavior.
+    - Explain correlation and safe reproduction of a failing request.
+    outline:
+    - Logs, Exits And Crash Loops
+    - Configuration, Dependencies And Request Failures
+    playground: false
+    module_lab: false
+    diagrams: []
+  - id: module-02
+    title: Debugging Failed Releases
+    objectives:
+    - Compare intended release identity with observed replicas and artifacts.
+    - Relate failed probes to rollout progress.
+    - Design a focused reproduce, correct and verify cycle.
+    - Choose rollback only when its compatibility requirements hold.
+    outline:
+    - Intended Versions And Observed Progress
+    - Reproduce, Correct And Verify
+    playground: false
+    module_lab: false
+    diagrams: []
+  capstone: false
+  section_quiz: true
+assessment_format: YAML question banks, schema version 1; indexed in assessments/index.yaml

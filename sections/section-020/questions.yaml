@@ -1,0 +1,134 @@
+schema_version: 1
+kind: question_bank
+id: ats039-section-020
+course_id: ATS039
+exam_code: KCNA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-020
+  title: Debugging
+placement:
+  position: after
+  reading: sections/section-020/module-02/course-03-summary.md
+questions:
+- id: ats039-section-020-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Use logs and termination evidence to form a diagnosis.
+  source_readings:
+  - sections/section-020/module-01/course-01-logs-exits-and-crash-loops.md
+  prompt: A process repeatedly exits after logging a missing configuration setting. What is the most useful
+    first hypothesis?
+  options:
+  - id: a
+    text: Increasing restart frequency will supply the missing value.
+    explanation: Retries do not create configuration.
+  - id: b
+    text: Every such exit proves a node hardware failure.
+    explanation: The evidence identifies a process input problem instead.
+  - id: c
+    text: The required startup input is absent or not reaching the process.
+    explanation: The log and immediate exit support a configuration diagnosis.
+  correct_option: c
+  explanation: The log and immediate exit support a configuration diagnosis.
+- id: ats039-section-020-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Relate configuration and dependency access to application behavior.
+  source_readings:
+  - sections/section-020/module-01/course-02-configuration-dependencies-and-request-failures.md
+  prompt: A mounted configuration file changed, but the application uses a cached setting. What must be
+    checked?
+  options:
+  - id: a
+    text: Whether the Service has the same name as the file.
+    explanation: Name equality does not control application reload.
+  - id: b
+    text: Whether the application reloads the value or needs restart.
+    explanation: File delivery and process adoption are separate behaviors.
+  - id: c
+    text: Only whether the Kubernetes object has the latest value.
+    explanation: That does not prove the process uses it.
+  correct_option: b
+  explanation: File delivery and process adoption are separate behaviors.
+- id: ats039-section-020-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain correlation and safe reproduction of a failing request.
+  source_readings:
+  - sections/section-020/module-01/course-02-configuration-dependencies-and-request-failures.md
+  prompt: A failing request succeeds when tested from an administrator's machine. What remains important?
+  options:
+  - id: a
+    text: Reproduce from the original caller's relevant identity and path.
+    explanation: Permissions, routes and inputs can differ between callers.
+  - id: b
+    text: Assume the original failure cannot exist.
+    explanation: The alternate test may not preserve the failing conditions.
+  - id: c
+    text: Delete all logs because one test passed.
+    explanation: Evidence of the original condition is still useful.
+  correct_option: a
+  explanation: Permissions, routes and inputs can differ between callers.
+- id: ats039-section-020-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Compare intended release identity with observed replicas and artifacts.
+  source_readings:
+  - sections/section-020/module-02/course-01-intended-versions-and-observed-progress.md
+  prompt: The desired image tag is unchanged, but some replicas behave differently after restart. Which
+    evidence best clarifies artifact identity?
+  options:
+  - id: a
+    text: Compare only the Pod display names.
+    explanation: Names do not identify application bytes.
+  - id: b
+    text: Assume identical tag strings guarantee identical artifacts.
+    explanation: Tags can move between builds.
+  - id: c
+    text: Compare the actual image digests and running release evidence.
+    explanation: Mutable tags can select different content.
+  correct_option: c
+  explanation: Mutable tags can select different content.
+- id: ats039-section-020-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Relate failed probes to rollout progress.
+  source_readings:
+  - sections/section-020/module-02/course-01-intended-versions-and-observed-progress.md
+  prompt: A release's containers listen on a new port, while readiness still checks the old one. What
+    focused correction fits the evidence?
+  options:
+  - id: a
+    text: Grant cluster-admin to every application.
+    explanation: Broad API permissions do not correct the listener mismatch.
+  - id: b
+    text: Align the health check and intended listener, then verify readiness and requests.
+    explanation: The hypothesis predicts a running process with failed probe connections.
+  - id: c
+    text: Increase replicas with the same mismatch.
+    explanation: More copies repeat the same probe failure.
+  correct_option: b
+  explanation: The hypothesis predicts a running process with failed probe connections.
+- id: ats039-section-020-q06
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Choose rollback only when its compatibility requirements hold.
+  source_readings:
+  - sections/section-020/module-02/course-02-reproduce-correct-and-verify.md
+  prompt: The new release changed the database schema incompatibly with the old version. Is reverting
+    only the image automatically safe?
+  options:
+  - id: a
+    text: No; present data and configuration compatibility must be checked.
+    explanation: A previous artifact may not work with current external state.
+  - id: b
+    text: Yes; an earlier image always restores all data changes.
+    explanation: Image rollback does not reverse the schema automatically.
+  - id: c
+    text: Yes; Deployment history is a database backup.
+    explanation: Pod template history does not store database recovery points.
+  correct_option: a
+  explanation: A previous artifact may not work with current external state.

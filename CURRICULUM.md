@@ -1,23 +1,22 @@
-# Curriculum And Authoring Plan
+# Curriculum Coverage
 
 Exam: Kubernetes and Cloud Native Associate (KCNA). Domain: Cloud Native Application Delivery (16%).
-Source: [official curriculum](https://training.linuxfoundation.org/certification/kubernetes-and-cloud-native-associate-kcna/), checked 2026-10-10.
-Objectives are attributed to The Linux Foundation and CNCF.
 
-Preparation scaffold; content authoring has not started.
+Verified against the [official objectives](https://training.linuxfoundation.org/certification/kubernetes-cloud-native-associate/) on 2026-10-10. Module titles and questions are original teaching material, not official exam questions.
 
-| Section | Official objective | Authoring status |
-| --- | --- | --- |
-| 010 | Application Delivery | Planned |
-| 020 | Debugging | Planned |
+| Section | Official objective | Modules | Status |
+| --- | --- | --- | --- |
+| 010 | Application Delivery | 3 | Written; review pending |
+| 020 | Debugging | 2 | Written; review pending |
 
-Before building content:
+| Section / module | Module | Teaching lessons | Measurable outcomes |
+| --- | --- | --- | --- |
+| 010 / 01 | Build And Release Pipelines | 2 | Trace source changes through build, checks and artifact publication.; Explain what continuous integration checks.; Distinguish continuous delivery from continuous deployment.; Relate release identity to an immutable artifact. |
+| 010 / 02 | GitOps And Deployment Configuration | 2 | Explain declarative, versioned desired state.; Describe pull-based reconciliation and drift correction.; Compare Helm templating with Kustomize overlays.; Identify what a GitOps controller cannot infer from repository state. |
+| 010 / 03 | Safe Application Releases | 2 | Explain rolling update behavior and readiness gates.; Compare rolling, blue-green and canary strategies.; Identify evidence needed to promote or reverse a release.; Explain compatibility limits of rollback. |
+| 020 / 01 | Diagnosing Application Failures | 2 | Distinguish process failure from application response failure.; Use logs and termination evidence to form a diagnosis.; Relate configuration and dependency access to application behavior.; Explain correlation and safe reproduction of a failing request. |
+| 020 / 02 | Debugging Failed Releases | 2 | Compare intended release identity with observed replicas and artifacts.; Relate failed probes to rollout progress.; Design a focused reproduce, correct and verify cycle.; Choose rollback only when its compatibility requirements hold. |
 
-- Recheck the curriculum and refine broad objectives into teachable modules.
-- Choose and record the environment versions and any image dependencies.
-- Write the introduction and remove placeholder notices only when it is ready.
-- Build short parts and runnable playgrounds; add graded labs where appropriate.
-- Add quizzes and a capstone when the completed domain needs them.
-- Check real outputs and reference solutions, and update `astrona.yaml`.
-- Remove `draft: true` from completed technical pages after review.
-- Publish the course only after the maintainer approves the completed content.
+Every section begins with an introduction. Every module ends with a summary before the next module. YAML question banks follow the final module summary of each section; a domain review bank closes the course. They are indexed separately for future application integration.
+
+This course has no labs or playgrounds, as requested by the maintainer. All material is readable without a cluster. Technical content remains draft until review; no runtime execution or lab validation is claimed.

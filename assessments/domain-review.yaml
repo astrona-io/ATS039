@@ -1,0 +1,134 @@
+schema_version: 1
+kind: question_bank
+id: ats039-domain-review
+course_id: ATS039
+exam_code: KCNA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: domain
+  id: domain-review
+  title: Cloud Native Application Delivery
+placement:
+  position: after
+  reading: sections/section-020/module-02/course-03-summary.md
+questions:
+- id: ats039-domain-review-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Relate release identity to an immutable artifact.
+  source_readings:
+  - sections/section-010/module-01/course-01-source-changes-and-build-evidence.md
+  prompt: Staging tested digest A, but production rebuilt the same source into digest B. What should a
+    release reviewer question?
+  options:
+  - id: a
+    text: Whether both Pods share a display name.
+    explanation: Names are not artifact identity evidence.
+  - id: b
+    text: Whether CI can ever run automatically.
+    explanation: Automation is not the uncertainty in the described promotion.
+  - id: c
+    text: Whether staging evidence applies to the actual production artifact.
+    explanation: A new build can differ even with the same source revision.
+  correct_option: c
+  explanation: A new build can differ even with the same source revision.
+- id: ats039-domain-review-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe pull-based reconciliation and drift correction.
+  source_readings:
+  - sections/section-010/module-02/course-01-gitops-reconciliation-and-drift.md
+  prompt: An emergency live change is undone by the delivery controller. What should the team inspect?
+  options:
+  - id: a
+    text: Only the registry image pull policy.
+    explanation: Pull policy affects artifact retrieval, not restoration of declarative live configuration.
+  - id: b
+    text: Declared desired state and the controller's drift correction policy.
+    explanation: Reconciliation can restore intent from the managed source.
+  - id: c
+    text: The container image's filesystem layers only.
+    explanation: Artifact packaging does not explain the desired replica or configuration restoration.
+  correct_option: b
+  explanation: Reconciliation can restore intent from the managed source.
+- id: ats039-domain-review-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Identify evidence needed to promote or reverse a release.
+  source_readings:
+  - sections/section-010/module-03/course-02-blue-green-canary-and-release-evidence.md
+  prompt: A canary has almost no representative requests and no observed errors. Is that enough evidence
+    for broad promotion?
+  options:
+  - id: a
+    text: No; exposure and measurements must represent meaningful application behavior.
+    explanation: A quiet canary may not exercise the risky paths.
+  - id: b
+    text: Yes; zero observed failures always proves complete correctness.
+    explanation: The sample can be too weak or unrepresentative.
+  - id: c
+    text: No; canaries are never usable.
+    explanation: They can support release decisions when the evidence is suitable.
+  correct_option: a
+  explanation: A quiet canary may not exercise the risky paths.
+- id: ats039-domain-review-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Relate configuration and dependency access to application behavior.
+  source_readings:
+  - sections/section-020/module-01/course-02-configuration-dependencies-and-request-failures.md
+  prompt: After a configuration-source change, application behavior remains unchanged. Which distinction
+    should debugging preserve?
+  options:
+  - id: a
+    text: Every source update automatically changes every process input.
+    explanation: Delivery and adoption depend on the configuration mechanism.
+  - id: b
+    text: A Service always reloads the application's settings.
+    explanation: Traffic selection does not implement application configuration reload.
+  - id: c
+    text: Updated source configuration and effective process configuration are separate evidence.
+    explanation: Environment values or cached settings may still be old.
+  correct_option: c
+  explanation: Environment values or cached settings may still be old.
+- id: ats039-domain-review-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Compare intended release identity with observed replicas and artifacts.
+  source_readings:
+  - sections/section-020/module-02/course-01-intended-versions-and-observed-progress.md
+  prompt: New replicas are healthy, but users still reach the old version through a stale route. What
+    area needs correction?
+  options:
+  - id: a
+    text: Node affinity alone.
+    explanation: Placement is not the supported cause in this scenario.
+  - id: b
+    text: The traffic destination and selection configuration.
+    explanation: Replica health does not prove that user traffic reaches those replicas.
+  - id: c
+    text: The build pipeline must rebuild the same artifact indefinitely.
+    explanation: Rebuilding does not correct the specified stale route.
+  correct_option: b
+  explanation: Replica health does not prove that user traffic reaches those replicas.
+- id: ats039-domain-review-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose rollback only when its compatibility requirements hold.
+  source_readings:
+  - sections/section-020/module-02/course-02-reproduce-correct-and-verify.md
+  prompt: A rollback is considered after a release changed an external schema. What should happen before
+    image reversal?
+  options:
+  - id: a
+    text: Check old-version compatibility with current data and configuration.
+    explanation: An earlier Pod template cannot automatically reverse external state.
+  - id: b
+    text: Assume rollout history contains every database recovery point.
+    explanation: It records workload history rather than database backups.
+  - id: c
+    text: Disable all verification because the previous image once worked.
+    explanation: Historical success does not establish current compatibility.
+  correct_option: a
+  explanation: An earlier Pod template cannot automatically reverse external state.
