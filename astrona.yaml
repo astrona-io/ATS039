@@ -33,7 +33,7 @@ modules:
 - id: module-010
   title: Application Delivery
   description: Concept lessons and scenario reasoning for Application Delivery.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: 'Application Delivery: Introduction'
@@ -77,7 +77,7 @@ modules:
 - id: module-020
   title: Debugging
   description: Concept lessons and scenario reasoning for Debugging.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: 'Debugging: Introduction'
