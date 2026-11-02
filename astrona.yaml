@@ -1,9 +1,9 @@
-# Preparation scaffold. Technical pages stay draft until authoring and review.
+# Reading-only course. YAML assessments are registered separately in assessments/index.yaml.
 training:
   id: ATS039
   title: 'KCNA: Cloud Native Application Delivery'
-  description: Preparation scaffold for Cloud Native Application Delivery. Lessons and environments are
-    planned.
+  description: Concept lessons, diagrams and original scenario assessments covering every published objective
+    in this KCNA domain. No labs or playgrounds.
   certification:
     name: Kubernetes and Cloud Native Associate
     code: KCNA
@@ -16,7 +16,7 @@ training:
 modules:
 - id: module-intro
   title: Introduction
-  description: Planned introduction and authoring status.
+  description: Audience, learning approach, reading requirements and contribution process.
   content:
   - type: reading
     title: Introduction
@@ -32,21 +32,77 @@ modules:
     path: sections/intro/course-03-how-this-course-is-made.md
 - id: module-010
   title: Application Delivery
-  description: Planned coverage of this curriculum objective.
+  description: Concept lessons and scenario reasoning for Application Delivery.
+  status: alpha
   content:
   - type: reading
-    title: Section Overview
+    title: 'Application Delivery: Introduction'
     path: sections/section-010/README.md
   - type: reading
-    title: Application Delivery
+    title: Build And Release Pipelines
     path: sections/section-010/module-01/course.md
+  - type: reading
+    title: Source Changes And Build Evidence
+    path: sections/section-010/module-01/course-01-source-changes-and-build-evidence.md
+  - type: reading
+    title: Delivery, Deployment And Promotion Decisions
+    path: sections/section-010/module-01/course-02-delivery-deployment-and-promotion-decisions.md
+  - type: reading
+    title: Summary
+    path: sections/section-010/module-01/course-03-summary.md
+  - type: reading
+    title: GitOps And Deployment Configuration
+    path: sections/section-010/module-02/course.md
+  - type: reading
+    title: GitOps Reconciliation And Drift
+    path: sections/section-010/module-02/course-01-gitops-reconciliation-and-drift.md
+  - type: reading
+    title: Helm, Kustomize And Configuration Rendering
+    path: sections/section-010/module-02/course-02-helm-kustomize-and-configuration-rendering.md
+  - type: reading
+    title: Summary
+    path: sections/section-010/module-02/course-03-summary.md
+  - type: reading
+    title: Safe Application Releases
+    path: sections/section-010/module-03/course.md
+  - type: reading
+    title: Rolling Updates And Health Gates
+    path: sections/section-010/module-03/course-01-rolling-updates-and-health-gates.md
+  - type: reading
+    title: Blue-Green, Canary And Release Evidence
+    path: sections/section-010/module-03/course-02-blue-green-canary-and-release-evidence.md
+  - type: reading
+    title: Summary
+    path: sections/section-010/module-03/course-03-summary.md
 - id: module-020
   title: Debugging
-  description: Planned coverage of this curriculum objective.
+  description: Concept lessons and scenario reasoning for Debugging.
+  status: alpha
   content:
   - type: reading
-    title: Section Overview
+    title: 'Debugging: Introduction'
     path: sections/section-020/README.md
   - type: reading
-    title: Debugging
+    title: Diagnosing Application Failures
     path: sections/section-020/module-01/course.md
+  - type: reading
+    title: Logs, Exits And Crash Loops
+    path: sections/section-020/module-01/course-01-logs-exits-and-crash-loops.md
+  - type: reading
+    title: Configuration, Dependencies And Request Failures
+    path: sections/section-020/module-01/course-02-configuration-dependencies-and-request-failures.md
+  - type: reading
+    title: Summary
+    path: sections/section-020/module-01/course-03-summary.md
+  - type: reading
+    title: Debugging Failed Releases
+    path: sections/section-020/module-02/course.md
+  - type: reading
+    title: Intended Versions And Observed Progress
+    path: sections/section-020/module-02/course-01-intended-versions-and-observed-progress.md
+  - type: reading
+    title: Reproduce, Correct And Verify
+    path: sections/section-020/module-02/course-02-reproduce-correct-and-verify.md
+  - type: reading
+    title: Summary
+    path: sections/section-020/module-02/course-03-summary.md

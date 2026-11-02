@@ -1,0 +1,175 @@
+schema_version: 1
+kind: question_bank
+id: ats039-section-010
+course_id: ATS039
+exam_code: KCNA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-010
+  title: Application Delivery
+placement:
+  position: after
+  reading: sections/section-010/module-03/course-03-summary.md
+questions:
+- id: ats039-section-010-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Trace source changes through build, checks and artifact publication.
+  source_readings:
+  - sections/section-010/module-01/course-01-source-changes-and-build-evidence.md
+  prompt: A team tested one image, then rebuilt from the same source before production. What important
+    uncertainty remains?
+  options:
+  - id: a
+    text: The tested and deployed bytes must be identical.
+    explanation: A rebuild can resolve different inputs.
+  - id: b
+    text: Testing the source automatically publishes every future image.
+    explanation: Testing and registry publication are different stages.
+  - id: c
+    text: The deployed artifact may differ because build inputs changed.
+    explanation: Source equality alone does not pin dependencies, tools or base images.
+  correct_option: c
+  explanation: Source equality alone does not pin dependencies, tools or base images.
+- id: ats039-section-010-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain what continuous integration checks.
+  source_readings:
+  - sections/section-010/module-01/course-01-source-changes-and-build-evidence.md
+  prompt: A pipeline passes unit tests but has no checks of production dependencies. What can be concluded?
+  options:
+  - id: a
+    text: The application cannot contain any defect.
+    explanation: Passing selected checks is not complete correctness proof.
+  - id: b
+    text: The configured unit checks passed, but other behavior remains unverified.
+    explanation: Evidence is bounded by the checks actually performed.
+  - id: c
+    text: Every production operation is guaranteed correct.
+    explanation: Those operations were not all tested.
+  correct_option: b
+  explanation: Evidence is bounded by the checks actually performed.
+- id: ats039-section-010-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Distinguish continuous delivery from continuous deployment.
+  source_readings:
+  - sections/section-010/module-01/course-02-delivery-deployment-and-promotion-decisions.md
+  prompt: Every change is tested automatically, but production promotion waits for human approval. Which
+    practice does this support?
+  options:
+  - id: a
+    text: Continuous delivery.
+    explanation: Changes remain releasable through a controlled decision.
+  - id: b
+    text: Continuous deployment solely because tests are automatic.
+    explanation: That practice also automates the qualifying production deployment decision.
+  - id: c
+    text: No automated delivery practice at all.
+    explanation: A manual release gate is compatible with continuous delivery.
+  correct_option: a
+  explanation: Changes remain releasable through a controlled decision.
+- id: ats039-section-010-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Describe pull-based reconciliation and drift correction.
+  source_readings:
+  - sections/section-010/module-02/course-01-gitops-reconciliation-and-drift.md
+  prompt: A live replica count is manually changed, and a GitOps controller later restores the versioned
+    value. What happened?
+  options:
+  - id: a
+    text: Git automatically executed the application source code.
+    explanation: A controller implements the resource reconciliation.
+  - id: b
+    text: Helm must have added a node.
+    explanation: Replica intent and node capacity are separate operations.
+  - id: c
+    text: Reconciliation corrected drift according to its policy.
+    explanation: The live state differed from declared intent.
+  correct_option: c
+  explanation: The live state differed from declared intent.
+- id: ats039-section-010-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Identify what a GitOps controller cannot infer from repository state.
+  source_readings:
+  - sections/section-010/module-02/course-01-gitops-reconciliation-and-drift.md
+  prompt: A team commits manifests to Git but applies them only by hand, with no automated pull or reconciliation.
+    What is missing from GitOps?
+  options:
+  - id: a
+    text: A rule that all Git commits are container images.
+    explanation: Configuration history and runtime artifacts are different objects.
+  - id: b
+    text: Automatic retrieval and continuous reconciliation.
+    explanation: Versioned storage alone does not implement the operating principles.
+  - id: c
+    text: A requirement that every application use microservices.
+    explanation: GitOps principles do not require that application architecture.
+  correct_option: b
+  explanation: Versioned storage alone does not implement the operating principles.
+- id: ats039-section-010-q06
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Compare Helm templating with Kustomize overlays.
+  source_readings:
+  - sections/section-010/module-02/course-02-helm-kustomize-and-configuration-rendering.md
+  prompt: A team wants to modify resource bases through environment overlays without general templates.
+    Which tool model best fits?
+  options:
+  - id: a
+    text: Kustomize.
+    explanation: It composes and patches resources through bases and overlays.
+  - id: b
+    text: A ServiceAccount.
+    explanation: It provides a workload identity rather than configuration rendering.
+  - id: c
+    text: A liveness probe.
+    explanation: It checks container health rather than customizing resource files.
+  correct_option: a
+  explanation: It composes and patches resources through bases and overlays.
+- id: ats039-section-010-q07
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain rolling update behavior and readiness gates.
+  source_readings:
+  - sections/section-010/module-03/course-01-rolling-updates-and-health-gates.md
+  prompt: New release Pods run but fail readiness. Why may old replicas continue receiving traffic during
+    a rollout?
+  options:
+  - id: a
+    text: Running always means ready, so the new replicas must receive all traffic.
+    explanation: These are separate states.
+  - id: b
+    text: A progress deadline guarantees immediate automatic rollback.
+    explanation: It signals stalled progress rather than universally performing rollback.
+  - id: c
+    text: The new replicas have not provided usable ready capacity.
+    explanation: Readiness and rollout availability gates affect replacement progress.
+  correct_option: c
+  explanation: Readiness and rollout availability gates affect replacement progress.
+- id: ats039-section-010-q08
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Compare rolling, blue-green and canary strategies.
+  source_readings:
+  - sections/section-010/module-03/course-02-blue-green-canary-and-release-evidence.md
+  prompt: A team sends a small representative traffic share to a new version and promotes it after evaluation.
+    Which strategy is this?
+  options:
+  - id: a
+    text: A one-time Job.
+    explanation: Task completion is unrelated to version-weighted release exposure.
+  - id: b
+    text: Canary release.
+    explanation: It stages exposure using measured behavior.
+  - id: c
+    text: Blue-green solely because two versions exist.
+    explanation: The defining behavior here is limited exposure and evaluation, not a full traffic switch
+      between prepared environments.
+  correct_option: b
+  explanation: It stages exposure using measured behavior.
