@@ -1,0 +1,210 @@
+# Knowledge check for the module. Listed in astrona.yaml after the module summary.
+---
+schema_version: 1
+kind: question_bank
+id: ats039-020-04
+course_id: ATS039
+exam_code: KCNA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-020
+  title: Debugging
+placement:
+  position: after
+  reading: sections/section-020/module-04/course-06-summary.md
+questions:
+- id: ats039-020-04-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Find Service backends.
+  source_readings:
+  - sections/section-020/module-04/course-01-service-selectors-endpoints-and-ports.md
+  prompt: Which object lists the pod addresses behind a Service?
+  options:
+  - id: a
+    text: ConfigMap
+    explanation: Not correct. EndpointSlices list the ready addresses.
+  - id: b
+    text: Namespace
+    explanation: Not correct. EndpointSlices list the ready addresses.
+  - id: c
+    text: EndpointSlice
+    explanation: Correct. EndpointSlices list the ready addresses.
+  correct_option: c
+  explanation: EndpointSlices list the ready addresses.
+- id: ats039-020-04-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Find a selector fault.
+  source_readings:
+  - sections/section-020/module-04/course-01-service-selectors-endpoints-and-ports.md
+  prompt: A Service shows no endpoints while its pods run. What is the most likely
+    cause?
+  options:
+  - id: a
+    text: The image is too large
+    explanation: Not correct. No match, no endpoints.
+  - id: b
+    text: The selector does not match the pod labels
+    explanation: Correct. No match, no endpoints.
+  - id: c
+    text: The namespace is too old
+    explanation: Not correct. No match, no endpoints.
+  correct_option: b
+  explanation: No match, no endpoints.
+- id: ats039-020-04-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Check ports.
+  source_readings:
+  - sections/section-020/module-04/course-01-service-selectors-endpoints-and-ports.md
+  prompt: A connection is refused though the Service has endpoints. Which field do
+    you compare with the container port?
+  options:
+  - id: a
+    text: targetPort
+    explanation: Correct. targetPort must match the container port.
+  - id: b
+    text: clusterIP
+    explanation: Not correct. targetPort must match the container port.
+  - id: c
+    text: type
+    explanation: Not correct. targetPort must match the container port.
+  correct_option: a
+  explanation: targetPort must match the container port.
+- id: ats039-020-04-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Know the DNS name.
+  source_readings:
+  - sections/section-020/module-04/course-02-dns-and-coredns.md
+  prompt: Which name resolves a Service web in namespace outpost from another namespace?
+  options:
+  - id: a
+    text: web.default
+    explanation: Not correct. Service name then namespace.
+  - id: b
+    text: outpost.web
+    explanation: Not correct. Service name then namespace.
+  - id: c
+    text: web.outpost
+    explanation: Correct. Service name then namespace.
+  correct_option: c
+  explanation: Service name then namespace.
+- id: ats039-020-04-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read ndots.
+  source_readings:
+  - sections/section-020/module-04/course-02-dns-and-coredns.md
+  prompt: What does ndots:5 do?
+  options:
+  - id: a
+    text: Limits a pod to five lookups
+    explanation: Not correct. Short names get search domains first.
+  - id: b
+    text: Tries search domains first for names with fewer than five dots
+    explanation: Correct. Short names get search domains first.
+  - id: c
+    text: Caches names for five seconds
+    explanation: Not correct. Short names get search domains first.
+  correct_option: b
+  explanation: Short names get search domains first.
+- id: ats039-020-04-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Check CoreDNS.
+  source_readings:
+  - sections/section-020/module-04/course-02-dns-and-coredns.md
+  prompt: Where does cluster DNS run?
+  options:
+  - id: a
+    text: As kube-dns pods in kube-system
+    explanation: Correct. CoreDNS runs in kube-system.
+  - id: b
+    text: On every node as a daemon outside Kubernetes
+    explanation: Not correct. CoreDNS runs in kube-system.
+  - id: c
+    text: Inside the API server
+    explanation: Not correct. CoreDNS runs in kube-system.
+  correct_option: a
+  explanation: CoreDNS runs in kube-system.
+- id: ats039-020-04-q07
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Recognise a block.
+  source_readings:
+  - sections/section-020/module-04/course-03-networkpolicy-blocks.md
+  prompt: Which symptom suggests a NetworkPolicy drop?
+  options:
+  - id: a
+    text: Connection refused at once
+    explanation: Not correct. Drops are silent.
+  - id: b
+    text: Name not found
+    explanation: Not correct. Drops are silent.
+  - id: c
+    text: Connections time out
+    explanation: Correct. Drops are silent.
+  correct_option: c
+  explanation: Drops are silent.
+- id: ats039-020-04-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read policy selection.
+  source_readings:
+  - sections/section-020/module-04/course-03-networkpolicy-blocks.md
+  prompt: 'What does podSelector: {} in a policy select?'
+  options:
+  - id: a
+    text: No pod
+    explanation: Not correct. The empty selector matches all pods.
+  - id: b
+    text: Every pod in the namespace
+    explanation: Correct. The empty selector matches all pods.
+  - id: c
+    text: Only pods without labels
+    explanation: Not correct. The empty selector matches all pods.
+  correct_option: b
+  explanation: The empty selector matches all pods.
+- id: ats039-020-04-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Place an Ingress fault.
+  source_readings:
+  - sections/section-020/module-04/course-04-ingress-and-gateway-routing.md
+  prompt: An Ingress returns 503 while the rule matched. Where do you look?
+  options:
+  - id: a
+    text: The Service endpoints
+    explanation: Correct. 503 means no ready backend.
+  - id: b
+    text: The DNS record
+    explanation: Not correct. 503 means no ready backend.
+  - id: c
+    text: The browser cache
+    explanation: Not correct. 503 means no ready backend.
+  correct_option: a
+  explanation: 503 means no ready backend.
+- id: ats039-020-04-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Read Gateway status.
+  source_readings:
+  - sections/section-020/module-04/course-04-ingress-and-gateway-routing.md
+  prompt: Which condition on an HTTPRoute is false when the backend Service does not
+    exist?
+  options:
+  - id: a
+    text: Programmed on the node
+    explanation: Not correct. ResolvedRefs reports backend reference problems.
+  - id: b
+    text: Ready on the pod
+    explanation: Not correct. ResolvedRefs reports backend reference problems.
+  - id: c
+    text: ResolvedRefs
+    explanation: Correct. ResolvedRefs reports backend reference problems.
+  correct_option: c
+  explanation: ResolvedRefs reports backend reference problems.

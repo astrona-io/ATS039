@@ -1,0 +1,210 @@
+# Knowledge check for the module. Listed in astrona.yaml after the module summary.
+---
+schema_version: 1
+kind: question_bank
+id: ats039-010-07
+course_id: ATS039
+exam_code: KCNA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-010
+  title: 'Safe Application Releases: Strategies, Tooling And Rollback Limits'
+placement:
+  position: after
+  reading: sections/section-010/module-07/course-06-summary.md
+questions:
+- id: ats039-010-07-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Compute surge.
+  source_readings:
+  - sections/section-010/module-07/course-01-rollout-settings-of-a-deployment.md
+  prompt: A Deployment has 4 replicas, maxSurge 1 and maxUnavailable 0. What is the
+    lowest number of available pods during the rollout?
+  options:
+  - id: a
+    text: '3'
+    explanation: Not correct. No pod may be missing, so the surge pod must be ready
+      first.
+  - id: b
+    text: '1'
+    explanation: Not correct. No pod may be missing, so the surge pod must be ready
+      first.
+  - id: c
+    text: '4'
+    explanation: Correct. No pod may be missing, so the surge pod must be ready first.
+  correct_option: c
+  explanation: No pod may be missing, so the surge pod must be ready first.
+- id: ats039-010-07-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Use minReadySeconds.
+  source_readings:
+  - sections/section-010/module-07/course-01-rollout-settings-of-a-deployment.md
+  prompt: What does minReadySeconds delay?
+  options:
+  - id: a
+    text: When the pod is created
+    explanation: Not correct. The pod must stay ready for that time.
+  - id: b
+    text: When a ready pod counts as available
+    explanation: Correct. The pod must stay ready for that time.
+  - id: c
+    text: When the image is pulled
+    explanation: Not correct. The pod must stay ready for that time.
+  correct_option: b
+  explanation: The pod must stay ready for that time.
+- id: ats039-010-07-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read the deadline.
+  source_readings:
+  - sections/section-010/module-07/course-01-rollout-settings-of-a-deployment.md
+  prompt: What happens when progressDeadlineSeconds passes without progress?
+  options:
+  - id: a
+    text: The rollout is reported as failed in the status
+    explanation: Correct. The controller reports; it does not undo.
+  - id: b
+    text: The Deployment is rolled back
+    explanation: Not correct. The controller reports; it does not undo.
+  - id: c
+    text: The pods are deleted
+    explanation: Not correct. The controller reports; it does not undo.
+  correct_option: a
+  explanation: The controller reports; it does not undo.
+- id: ats039-010-07-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Pause a rollout.
+  source_readings:
+  - sections/section-010/module-07/course-01-rollout-settings-of-a-deployment.md
+  prompt: Why pause a rollout before several changes?
+  options:
+  - id: a
+    text: To stop the pods
+    explanation: Not correct. Resume creates one new ReplicaSet.
+  - id: b
+    text: To skip the readiness probe
+    explanation: Not correct. Resume creates one new ReplicaSet.
+  - id: c
+    text: To apply them as one revision
+    explanation: Correct. Resume creates one new ReplicaSet.
+  correct_option: c
+  explanation: Resume creates one new ReplicaSet.
+- id: ats039-010-07-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Recognise what a PDB covers.
+  source_readings:
+  - sections/section-010/module-07/course-02-poddisruptionbudgets-and-node-drains.md
+  prompt: Which event does a PodDisruptionBudget limit?
+  options:
+  - id: a
+    text: A node crash
+    explanation: Not correct. Only voluntary disruptions use eviction.
+  - id: b
+    text: A node drain
+    explanation: Correct. Only voluntary disruptions use eviction.
+  - id: c
+    text: An out-of-memory kill
+    explanation: Not correct. Only voluntary disruptions use eviction.
+  correct_option: b
+  explanation: Only voluntary disruptions use eviction.
+- id: ats039-010-07-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Find a drain block.
+  source_readings:
+  - sections/section-010/module-07/course-02-poddisruptionbudgets-and-node-drains.md
+  prompt: A drain waits for ever. Which budget causes it?
+  options:
+  - id: a
+    text: 'maxUnavailable: 0'
+    explanation: Correct. No eviction is allowed.
+  - id: b
+    text: 'maxUnavailable: 1'
+    explanation: Not correct. No eviction is allowed.
+  - id: c
+    text: 'minAvailable: 1 with 4 replicas'
+    explanation: Not correct. No eviction is allowed.
+  correct_option: a
+  explanation: No eviction is allowed.
+- id: ats039-010-07-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Rollout and PDB.
+  source_readings:
+  - sections/section-010/module-07/course-02-poddisruptionbudgets-and-node-drains.md
+  prompt: Does a PDB slow a normal Deployment rolling update?
+  options:
+  - id: a
+    text: Yes, always
+    explanation: Not correct. The rollout is limited by maxUnavailable.
+  - id: b
+    text: Only for Services
+    explanation: Not correct. The rollout is limited by maxUnavailable.
+  - id: c
+    text: No, a rollout does not use the eviction API
+    explanation: Correct. The rollout is limited by maxUnavailable.
+  correct_option: c
+  explanation: The rollout is limited by maxUnavailable.
+- id: ats039-010-07-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Order of shutdown.
+  source_readings:
+  - sections/section-010/module-07/course-03-graceful-shutdown.md
+  prompt: Which runs first when a pod is terminated?
+  options:
+  - id: a
+    text: SIGKILL
+    explanation: Not correct. The hook runs before SIGTERM.
+  - id: b
+    text: The preStop hook, in parallel with endpoint removal
+    explanation: Correct. The hook runs before SIGTERM.
+  - id: c
+    text: The next rollout
+    explanation: Not correct. The hook runs before SIGTERM.
+  correct_option: b
+  explanation: The hook runs before SIGTERM.
+- id: ats039-010-07-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Grace period.
+  source_readings:
+  - sections/section-010/module-07/course-03-graceful-shutdown.md
+  prompt: What happens after terminationGracePeriodSeconds?
+  options:
+  - id: a
+    text: The kubelet sends SIGKILL
+    explanation: Correct. The process is killed.
+  - id: b
+    text: The pod is restarted
+    explanation: Not correct. The process is killed.
+  - id: c
+    text: The Service is deleted
+    explanation: Not correct. The process is killed.
+  correct_option: a
+  explanation: The process is killed.
+- id: ats039-010-07-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Avoid a stalled surge.
+  source_readings:
+  - sections/section-010/module-07/course-04-spreading-capacity-and-autoscaling.md
+  prompt: A new pod stays Pending during a rollout. Which event reason is most likely?
+  options:
+  - id: a
+    text: Pulled
+    explanation: Not correct. Insufficient capacity or quota blocks the surge pod.
+  - id: b
+    text: Created
+    explanation: Not correct. Insufficient capacity or quota blocks the surge pod.
+  - id: c
+    text: FailedScheduling
+    explanation: Correct. Insufficient capacity or quota blocks the surge pod.
+  correct_option: c
+  explanation: Insufficient capacity or quota blocks the surge pod.

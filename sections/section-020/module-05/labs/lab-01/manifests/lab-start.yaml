@@ -1,0 +1,49 @@
+# Starting state: a ResourceQuota that is too small, a Deployment that hits it and a pod with a bad node selector.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: outpost
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: small
+  namespace: outpost
+spec:
+  hard:
+    pods: "3"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crew
+  namespace: outpost
+  labels:
+    app: crew
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: crew
+  template:
+    metadata:
+      labels:
+        app: crew
+    spec:
+      containers:
+        - name: crew
+          image: busybox:1.37.0
+          command: ["sh", "-c", "sleep 3600"]
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: wanderer
+  namespace: outpost
+spec:
+  nodeSelector:
+    disktype: ssd-fast
+  containers:
+    - name: wanderer
+      image: busybox:1.37.0
+      command: ["sh", "-c", "sleep 3600"]

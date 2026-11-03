@@ -1,0 +1,33 @@
+# Starting state: the dock Deployment with default rollout settings and no budget.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: outpost
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dock
+  namespace: outpost
+  labels:
+    app: dock
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: dock
+  template:
+    metadata:
+      labels:
+        app: dock
+    spec:
+      containers:
+        - name: dock
+          image: ghcr.io/stefanprodan/podinfo:6.15.0
+          ports:
+            - name: http
+              containerPort: 9898
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http

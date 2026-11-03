@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Version Configuration And Mount A Secret Lab (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-039-lab-010-06
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+
+# Starting state: a Deployment that reads a mutable ConfigMap and has no Secret
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the starting state
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: immutable-config
+      description: The ConfigMap ledger-config-v2 is immutable and has LEVEL debug
+      type: file
+      source: validation/01-immutable-config.sh
+      hint: Create a new ConfigMap with immutable true instead of editing the old one
+    - name: rollout
+      description: ledger reads ledger-config-v2 and runs two updated replicas
+      type: file
+      source: validation/02-rollout.sh
+      hint: Point the env reference at the new ConfigMap and wait for the rollout
+    - name: secret-volume
+      description: The token Secret is mounted read-only at /etc/ledger-token
+      type: file
+      source: validation/03-secret-volume.sh
+      hint: Mount the Secret as a volume with readOnly true
+
+teardown:
+  keepCluster: false

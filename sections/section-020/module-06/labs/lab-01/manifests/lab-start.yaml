@@ -1,0 +1,52 @@
+# Starting state: beacon (good image, then a bad update in the bootstrap) and ledger with drifted replicas.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: outpost
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: beacon
+  namespace: outpost
+  labels:
+    app: beacon
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: beacon
+  template:
+    metadata:
+      labels:
+        app: beacon
+    spec:
+      containers:
+        - name: beacon
+          image: ghcr.io/stefanprodan/podinfo:6.15.0
+          ports:
+            - containerPort: 9898
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ledger
+  namespace: outpost
+  labels:
+    app: ledger
+  annotations:
+    gitops/desired-replicas: "2"
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: ledger
+  template:
+    metadata:
+      labels:
+        app: ledger
+    spec:
+      containers:
+        - name: ledger
+          image: busybox:1.37.0
+          command: ["sh", "-c", "sleep 3600"]

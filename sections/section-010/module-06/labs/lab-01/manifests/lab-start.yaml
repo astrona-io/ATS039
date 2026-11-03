@@ -1,0 +1,47 @@
+# Starting state: the outpost namespace, a ConfigMap and a Deployment that reads it.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: outpost
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ledger-config
+  namespace: outpost
+data:
+  LEVEL: info
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ledger
+  namespace: outpost
+  labels:
+    app: ledger
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ledger
+  template:
+    metadata:
+      labels:
+        app: ledger
+    spec:
+      containers:
+        - name: ledger
+          image: ghcr.io/stefanprodan/podinfo:6.15.0
+          env:
+            - name: PODINFO_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: ledger-config
+                  key: LEVEL
+          ports:
+            - name: http
+              containerPort: 9898
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http

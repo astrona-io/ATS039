@@ -1,0 +1,213 @@
+# Knowledge check for the module. Listed in astrona.yaml after the module summary.
+---
+schema_version: 1
+kind: question_bank
+id: ats039-010-05
+course_id: ATS039
+exam_code: KCNA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-010
+  title: 'Safe Application Releases: Strategies, Tooling And Rollback Limits'
+placement:
+  position: after
+  reading: sections/section-010/module-05/course-06-summary.md
+questions:
+- id: ats039-010-05-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Describe a base.
+  source_readings:
+  - sections/section-010/module-05/course-01-bases-and-kustomization-files.md
+  prompt: What is a Kustomize base?
+  options:
+  - id: a
+    text: A template with placeholders
+    explanation: Not correct. A base is valid on its own and overlays refer to it.
+  - id: b
+    text: A Helm chart repository
+    explanation: Not correct. A base is valid on its own and overlays refer to it.
+  - id: c
+    text: A directory of manifests that works without an overlay
+    explanation: Correct. A base is valid on its own and overlays refer to it.
+  correct_option: c
+  explanation: A base is valid on its own and overlays refer to it.
+- id: ats039-010-05-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Render without applying.
+  source_readings:
+  - sections/section-010/module-05/course-01-bases-and-kustomization-files.md
+  prompt: Which command prints the result of a kustomization and changes nothing in
+    the cluster?
+  options:
+  - id: a
+    text: kubectl apply -k DIR
+    explanation: Not correct. kubectl kustomize renders only.
+  - id: b
+    text: kubectl kustomize DIR
+    explanation: Correct. kubectl kustomize renders only.
+  - id: c
+    text: kubectl rollout status
+    explanation: Not correct. kubectl kustomize renders only.
+  correct_option: b
+  explanation: kubectl kustomize renders only.
+- id: ats039-010-05-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Change an image.
+  source_readings:
+  - sections/section-010/module-05/course-01-bases-and-kustomization-files.md
+  prompt: Which kustomization field changes the image tag without editing the Deployment?
+  options:
+  - id: a
+    text: images
+    explanation: Correct. The images transformer sets name, tag or digest.
+  - id: b
+    text: replicas
+    explanation: Not correct. The images transformer sets name, tag or digest.
+  - id: c
+    text: namePrefix
+    explanation: Not correct. The images transformer sets name, tag or digest.
+  correct_option: a
+  explanation: The images transformer sets name, tag or digest.
+- id: ats039-010-05-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Predict the selector problem.
+  source_readings:
+  - sections/section-010/module-05/course-01-bases-and-kustomization-files.md
+  prompt: Why can adding labels with includeSelectors fail on an existing Deployment?
+  options:
+  - id: a
+    text: Labels are not allowed on Deployments
+    explanation: Not correct. Changing the selector requires recreating the Deployment.
+  - id: b
+    text: includeSelectors is deprecated
+    explanation: Not correct. Changing the selector requires recreating the Deployment.
+  - id: c
+    text: The selector of a Deployment is immutable
+    explanation: Correct. Changing the selector requires recreating the Deployment.
+  correct_option: c
+  explanation: Changing the selector requires recreating the Deployment.
+- id: ats039-010-05-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose a patch name.
+  source_readings:
+  - sections/section-010/module-05/course-02-overlays-and-patches.md
+  prompt: An overlay uses namePrefix prod- and patches the Deployment. Which name
+    does the patch use?
+  options:
+  - id: a
+    text: The prefixed name
+    explanation: Not correct. Patches match the resource before transformers rename
+      it.
+  - id: b
+    text: The name in the base
+    explanation: Correct. Patches match the resource before transformers rename it.
+  - id: c
+    text: Any name
+    explanation: Not correct. Patches match the resource before transformers rename
+      it.
+  correct_option: b
+  explanation: Patches match the resource before transformers rename it.
+- id: ats039-010-05-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose a patch type.
+  source_readings:
+  - sections/section-010/module-05/course-02-overlays-and-patches.md
+  prompt: Which patch type can replace a list item by its position?
+  options:
+  - id: a
+    text: JSON 6902
+    explanation: Correct. JSON patches address paths and indexes.
+  - id: b
+    text: Strategic merge
+    explanation: Not correct. JSON patches address paths and indexes.
+  - id: c
+    text: Component
+    explanation: Not correct. JSON patches address paths and indexes.
+  correct_option: a
+  explanation: JSON patches address paths and indexes.
+- id: ats039-010-05-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain the hash.
+  source_readings:
+  - sections/section-010/module-05/course-03-generators-name-suffixes-and-transformers.md
+  prompt: Why does the generated ConfigMap name contain a hash?
+  options:
+  - id: a
+    text: It encrypts the data
+    explanation: Not correct. The new name changes the pod template.
+  - id: b
+    text: It lowers the size of the object
+    explanation: Not correct. The new name changes the pod template.
+  - id: c
+    text: A content change creates a new name and starts a rollout
+    explanation: Correct. The new name changes the pod template.
+  correct_option: c
+  explanation: The new name changes the pod template.
+- id: ats039-010-05-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Merge generated data.
+  source_readings:
+  - sections/section-010/module-05/course-03-generators-name-suffixes-and-transformers.md
+  prompt: An overlay must change one key of a ConfigMap from the base and keep the
+    others. Which behavior fits?
+  options:
+  - id: a
+    text: replace
+    explanation: Not correct. merge keeps the base keys.
+  - id: b
+    text: merge
+    explanation: Correct. merge keeps the base keys.
+  - id: c
+    text: create
+    explanation: Not correct. merge keeps the base keys.
+  correct_option: b
+  explanation: merge keeps the base keys.
+- id: ats039-010-05-q09
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Review a change.
+  source_readings:
+  - sections/section-010/module-05/course-04-components-review-and-choosing-a-tool.md
+  prompt: Which command compares a kustomization with the live cluster objects?
+  options:
+  - id: a
+    text: kubectl diff -k DIR
+    explanation: Correct. kubectl diff -k prints the changes an apply would make.
+  - id: b
+    text: kubectl get -k DIR
+    explanation: Not correct. kubectl diff -k prints the changes an apply would make.
+  - id: c
+    text: kubectl describe -k DIR
+    explanation: Not correct. kubectl diff -k prints the changes an apply would make.
+  correct_option: a
+  explanation: kubectl diff -k prints the changes an apply would make.
+- id: ats039-010-05-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Choose a tool.
+  source_readings:
+  - sections/section-010/module-05/course-04-components-review-and-choosing-a-tool.md
+  prompt: A team must change a field that a vendor Helm chart does not expose. What
+    is a common approach?
+  options:
+  - id: a
+    text: Edit the chart repository
+    explanation: Not correct. Kustomize can patch rendered output.
+  - id: b
+    text: Give up the field
+    explanation: Not correct. Kustomize can patch rendered output.
+  - id: c
+    text: Render with helm template and patch with Kustomize
+    explanation: Correct. Kustomize can patch rendered output.
+  correct_option: c
+  explanation: Kustomize can patch rendered output.

@@ -72,6 +72,66 @@ sections:
     playground: true
     module_lab: true
     diagrams: []
+  - id: module-04
+    title: Helm Charts And Releases
+    objectives:
+    - Describe the files of a Helm chart and how templates use values.
+    - Install, upgrade, inspect and roll back a Helm release.
+    - Predict which value wins when several sources set the same key.
+    - Explain what chart repositories, dependencies and hooks add.
+    outline:
+    - Chart Anatomy And Templates
+    - Installing, Upgrading And Rolling Back Releases
+    - Values, Precedence And Checks
+    - Repositories, Dependencies And Hooks
+    playground: true
+    module_lab: true
+    diagrams: []
+  - id: module-05
+    title: Kustomize Bases, Overlays And Patches
+    objectives:
+    - Describe the roles of a base, an overlay and a kustomization file.
+    - Change an environment with transformers, strategic merge patches and JSON patches.
+    - Explain how generators and name suffix hashes trigger rollouts.
+    - Review a Kustomize result before applying it.
+    outline:
+    - Bases And Kustomization Files
+    - Overlays And Patches
+    - Generators, Name Suffixes And Transformers
+    - Components, Review And Choosing A Tool
+    playground: true
+    module_lab: true
+    diagrams: []
+  - id: module-06
+    title: Configuration And Secrets In Delivery
+    objectives:
+    - Compare environment variables and mounted files as ways to read configuration.
+    - Explain what a Secret protects and what protects it further.
+    - Choose a method to deliver secrets with a GitOps workflow.
+    - Make a configuration change roll out in a controlled way.
+    outline:
+    - ConfigMaps And How Pods Read Them
+    - Secrets And Their Limits
+    - Delivering Secrets Without Putting Them In Git
+    - Configuration Rollouts, Immutability And Rotation
+    playground: true
+    module_lab: true
+    diagrams: []
+  - id: module-07
+    title: Rollout Controls And Disruption Safety
+    objectives:
+    - Tune maxSurge, maxUnavailable, minReadySeconds and the deadline of a rollout.
+    - Explain what a PodDisruptionBudget protects and what it does not.
+    - Describe how a pod shuts down and configure it for graceful shutdown.
+    - Explain how spreading and capacity limits affect a rollout.
+    outline:
+    - Rollout Settings Of A Deployment
+    - PodDisruptionBudgets And Node Drains
+    - Graceful Shutdown
+    - Spreading, Capacity And Autoscaling During Rollouts
+    playground: true
+    module_lab: true
+    diagrams: []
   capstone: false
   section_quiz: true
 - id: section-020
@@ -107,6 +167,66 @@ sections:
     - Image And Registry Failures
     - Rollback Decisions And Fix-Forward
     - Post-Release Verification And Incident Notes
+    playground: true
+    module_lab: true
+    diagrams: []
+  - id: module-03
+    title: Debugging Inside Pods With kubectl
+    objectives:
+    - Run commands, copy files and forward ports to reach a pod.
+    - Attach an ephemeral debug container to a pod that has no shell.
+    - Recognise out-of-memory kills and resource limit problems.
+    - Diagnose permission and read-only filesystem failures.
+    outline:
+    - exec, cp And port-forward
+    - Ephemeral Containers And kubectl debug
+    - Resources, OOM Kills And Limits
+    - Files, Permissions And Security Contexts
+    playground: true
+    module_lab: true
+    diagrams: []
+  - id: module-04
+    title: Debugging Services, DNS And Ingress
+    objectives:
+    - Find a Service with no endpoints and name the cause.
+    - Test name resolution from inside a pod and read CoreDNS state.
+    - Recognise when a NetworkPolicy blocks traffic.
+    - Trace a request from an Ingress or Gateway to a pod.
+    outline:
+    - Service Selectors, Endpoints And Ports
+    - DNS And CoreDNS
+    - NetworkPolicy Blocks
+    - Ingress And Gateway Routing
+    playground: true
+    module_lab: true
+    diagrams: []
+  - id: module-05
+    title: Debugging Scheduling, Storage And Cluster Dependencies
+    objectives:
+    - Read FailedScheduling events and name the cause.
+    - Use taints, tolerations and node selectors to explain placement.
+    - Diagnose a PersistentVolumeClaim that stays Pending.
+    - Find quota, limit range and node condition problems.
+    outline:
+    - How The Scheduler Decides
+    - Taints, Tolerations And Node Selection
+    - PersistentVolumeClaims And Storage
+    - Quotas, Limit Ranges And Node Conditions
+    playground: true
+    module_lab: true
+    diagrams: []
+  - id: module-06
+    title: Debugging Helm And GitOps Delivery Failures
+    objectives:
+    - Read Helm release status, history and failure messages.
+    - Render a chart locally to find a template or values fault.
+    - Tell sync status from health and find drift in a GitOps tool.
+    - Roll back safely and record what failed.
+    outline:
+    - Failed Helm Releases And History
+    - Chart Rendering And Values Problems
+    - GitOps Sync, Health And Drift
+    - Rollback And Recovery
     playground: true
     module_lab: true
     diagrams: []

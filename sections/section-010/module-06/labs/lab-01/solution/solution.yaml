@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ledger-config-v2
+  namespace: outpost
+immutable: true
+data:
+  LEVEL: debug
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ledger-token
+  namespace: outpost
+type: Opaque
+stringData:
+  token: orbit-7
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ledger
+  namespace: outpost
+  labels:
+    app: ledger
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ledger
+  template:
+    metadata:
+      labels:
+        app: ledger
+    spec:
+      containers:
+        - name: ledger
+          image: ghcr.io/stefanprodan/podinfo:6.15.0
+          env:
+            - name: PODINFO_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: ledger-config-v2
+                  key: LEVEL
+          ports:
+            - name: http
+              containerPort: 9898
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+          volumeMounts:
+            - name: token
+              mountPath: /etc/ledger-token
+              readOnly: true
+      volumes:
+        - name: token
+          secret:
+            secretName: ledger-token
+            defaultMode: 0400

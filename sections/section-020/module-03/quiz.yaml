@@ -1,0 +1,211 @@
+# Knowledge check for the module. Listed in astrona.yaml after the module summary.
+---
+schema_version: 1
+kind: question_bank
+id: ats039-020-03
+course_id: ATS039
+exam_code: KCNA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-020
+  title: Debugging
+placement:
+  position: after
+  reading: sections/section-020/module-03/course-06-summary.md
+questions:
+- id: ats039-020-03-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Run a command in a container.
+  source_readings:
+  - sections/section-020/module-03/course-01-exec-cp-and-port-forward.md
+  prompt: Which command runs a shell in a running container of pod app?
+  options:
+  - id: a
+    text: kubectl logs app -- sh
+    explanation: Not correct. exec -it opens an interactive process.
+  - id: b
+    text: kubectl run app sh
+    explanation: Not correct. exec -it opens an interactive process.
+  - id: c
+    text: kubectl exec -it app -- sh
+    explanation: Correct. exec -it opens an interactive process.
+  correct_option: c
+  explanation: exec -it opens an interactive process.
+- id: ats039-020-03-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know cp limits.
+  source_readings:
+  - sections/section-020/module-03/course-01-exec-cp-and-port-forward.md
+  prompt: A copy with kubectl cp fails on a minimal image. What is a likely reason?
+  options:
+  - id: a
+    text: The pod has no labels
+    explanation: Not correct. kubectl cp relies on tar in the container.
+  - id: b
+    text: The image has no tar program
+    explanation: Correct. kubectl cp relies on tar in the container.
+  - id: c
+    text: The Service has no endpoints
+    explanation: Not correct. kubectl cp relies on tar in the container.
+  correct_option: b
+  explanation: kubectl cp relies on tar in the container.
+- id: ats039-020-03-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Interpret port-forward.
+  source_readings:
+  - sections/section-020/module-03/course-01-exec-cp-and-port-forward.md
+  prompt: A request works through port-forward to a pod and fails through the Service.
+    What does this suggest?
+  options:
+  - id: a
+    text: A problem with the Service, selector or endpoints
+    explanation: Correct. Port-forward bypasses the Service.
+  - id: b
+    text: A problem with the image
+    explanation: Not correct. Port-forward bypasses the Service.
+  - id: c
+    text: A problem with the node CPU
+    explanation: Not correct. Port-forward bypasses the Service.
+  correct_option: a
+  explanation: Port-forward bypasses the Service.
+- id: ats039-020-03-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Debug an image without a shell.
+  source_readings:
+  - sections/section-020/module-03/course-02-ephemeral-containers-and-kubectl-debug.md
+  prompt: Which feature adds a temporary container with tools to a running pod?
+  options:
+  - id: a
+    text: Init containers
+    explanation: Not correct. kubectl debug adds an ephemeral container.
+  - id: b
+    text: Sidecar rollout
+    explanation: Not correct. kubectl debug adds an ephemeral container.
+  - id: c
+    text: Ephemeral containers
+    explanation: Correct. kubectl debug adds an ephemeral container.
+  correct_option: c
+  explanation: kubectl debug adds an ephemeral container.
+- id: ats039-020-03-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Share processes.
+  source_readings:
+  - sections/section-020/module-03/course-02-ephemeral-containers-and-kubectl-debug.md
+  prompt: Which flag makes a debug container see the processes of the application
+    container?
+  options:
+  - id: a
+    text: "--copy-to"
+    explanation: Not correct. --target shares the process namespace of that container.
+  - id: b
+    text: "--target"
+    explanation: Correct. --target shares the process namespace of that container.
+  - id: c
+    text: "--restart"
+    explanation: Not correct. --target shares the process namespace of that container.
+  correct_option: b
+  explanation: "--target shares the process namespace of that container."
+- id: ats039-020-03-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Debug a crash loop.
+  source_readings:
+  - sections/section-020/module-03/course-02-ephemeral-containers-and-kubectl-debug.md
+  prompt: A pod crash-loops too fast to debug. Which approach helps?
+  options:
+  - id: a
+    text: kubectl debug --copy-to with a command that keeps the pod running
+    explanation: Correct. A copy with sleep stays up for inspection.
+  - id: b
+    text: Delete the pod repeatedly
+    explanation: Not correct. A copy with sleep stays up for inspection.
+  - id: c
+    text: Raise the replica count
+    explanation: Not correct. A copy with sleep stays up for inspection.
+  correct_option: a
+  explanation: A copy with sleep stays up for inspection.
+- id: ats039-020-03-q07
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Read an OOM kill.
+  source_readings:
+  - sections/section-020/module-03/course-03-resources-oom-kills-and-limits.md
+  prompt: Which reason and exit code show an out-of-memory kill?
+  options:
+  - id: a
+    text: Completed and 0
+    explanation: Not correct. The kernel sends SIGKILL, code 128 plus 9.
+  - id: b
+    text: Error and 1
+    explanation: Not correct. The kernel sends SIGKILL, code 128 plus 9.
+  - id: c
+    text: OOMKilled and 137
+    explanation: Correct. The kernel sends SIGKILL, code 128 plus 9.
+  correct_option: c
+  explanation: The kernel sends SIGKILL, code 128 plus 9.
+- id: ats039-020-03-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Compare CPU and memory.
+  source_readings:
+  - sections/section-020/module-03/course-03-resources-oom-kills-and-limits.md
+  prompt: What happens when a container exceeds its CPU limit?
+  options:
+  - id: a
+    text: It is killed
+    explanation: Not correct. CPU can be shared out later.
+  - id: b
+    text: It is throttled and not restarted
+    explanation: Correct. CPU can be shared out later.
+  - id: c
+    text: It is evicted at once
+    explanation: Not correct. CPU can be shared out later.
+  correct_option: b
+  explanation: CPU can be shared out later.
+- id: ats039-020-03-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Fix a read-only failure.
+  source_readings:
+  - sections/section-020/module-03/course-04-files-permissions-and-security-contexts.md
+  prompt: A container with readOnlyRootFilesystem must write to /data. What is the
+    best fix?
+  options:
+  - id: a
+    text: Mount an emptyDir volume at /data
+    explanation: Correct. Give write access to one path only.
+  - id: b
+    text: Run as root
+    explanation: Not correct. Give write access to one path only.
+  - id: c
+    text: Remove the security context
+    explanation: Not correct. Give write access to one path only.
+  correct_option: a
+  explanation: Give write access to one path only.
+- id: ats039-020-03-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Diagnose a volume permission.
+  source_readings:
+  - sections/section-020/module-03/course-04-files-permissions-and-security-contexts.md
+  prompt: A volume is owned by root and the container runs as user 1000. Which setting
+    helps the container write?
+  options:
+  - id: a
+    text: A larger memory limit
+    explanation: Not correct. fsGroup changes the group of the volume.
+  - id: b
+    text: A new image tag
+    explanation: Not correct. fsGroup changes the group of the volume.
+  - id: c
+    text: fsGroup in the pod security context
+    explanation: Correct. fsGroup changes the group of the volume.
+  correct_option: c
+  explanation: fsGroup changes the group of the volume.

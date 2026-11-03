@@ -1,0 +1,210 @@
+# Knowledge check for the module. Listed in astrona.yaml after the module summary.
+---
+schema_version: 1
+kind: question_bank
+id: ats039-020-05
+course_id: ATS039
+exam_code: KCNA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-020
+  title: Debugging
+placement:
+  position: after
+  reading: sections/section-020/module-05/course-06-summary.md
+questions:
+- id: ats039-020-05-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Find the reason.
+  source_readings:
+  - sections/section-020/module-05/course-01-how-the-scheduler-decides.md
+  prompt: Where does the scheduler record why a pod cannot be placed?
+  options:
+  - id: a
+    text: The container logs
+    explanation: Not correct. The event lists the reasons.
+  - id: b
+    text: The Service endpoints
+    explanation: Not correct. The event lists the reasons.
+  - id: c
+    text: A FailedScheduling event on the pod
+    explanation: Correct. The event lists the reasons.
+  correct_option: c
+  explanation: The event lists the reasons.
+- id: ats039-020-05-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Requests versus use.
+  source_readings:
+  - sections/section-020/module-05/course-01-how-the-scheduler-decides.md
+  prompt: A node looks idle in kubectl top but pods stay Pending for CPU. Why?
+  options:
+  - id: a
+    text: The metrics are always wrong
+    explanation: Not correct. Requests reserve capacity.
+  - id: b
+    text: The scheduler counts requests, not use
+    explanation: Correct. Requests reserve capacity.
+  - id: c
+    text: Pods cannot use idle CPU
+    explanation: Not correct. Requests reserve capacity.
+  correct_option: b
+  explanation: Requests reserve capacity.
+- id: ats039-020-05-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read the message.
+  source_readings:
+  - sections/section-020/module-05/course-01-how-the-scheduler-decides.md
+  prompt: 'What does 0/3 nodes are available: 3 Insufficient cpu mean?'
+  options:
+  - id: a
+    text: No node has enough unreserved CPU for the request
+    explanation: Correct. All three nodes were filtered out for CPU.
+  - id: b
+    text: Three pods use too much CPU
+    explanation: Not correct. All three nodes were filtered out for CPU.
+  - id: c
+    text: The CPU limit is too high
+    explanation: Not correct. All three nodes were filtered out for CPU.
+  correct_option: a
+  explanation: All three nodes were filtered out for CPU.
+- id: ats039-020-05-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Know taints.
+  source_readings:
+  - sections/section-020/module-05/course-02-taints-tolerations-and-node-selection.md
+  prompt: What does a toleration do?
+  options:
+  - id: a
+    text: Forces a pod onto the node
+    explanation: Not correct. It permits placement only.
+  - id: b
+    text: Removes the taint
+    explanation: Not correct. It permits placement only.
+  - id: c
+    text: Allows a pod to be placed on a node with a matching taint
+    explanation: Correct. It permits placement only.
+  correct_option: c
+  explanation: It permits placement only.
+- id: ats039-020-05-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Taint effect.
+  source_readings:
+  - sections/section-020/module-05/course-02-taints-tolerations-and-node-selection.md
+  prompt: Which taint effect also evicts running pods without a toleration?
+  options:
+  - id: a
+    text: NoSchedule
+    explanation: Not correct. NoExecute applies to running pods too.
+  - id: b
+    text: NoExecute
+    explanation: Correct. NoExecute applies to running pods too.
+  - id: c
+    text: PreferNoSchedule
+    explanation: Not correct. NoExecute applies to running pods too.
+  correct_option: b
+  explanation: NoExecute applies to running pods too.
+- id: ats039-020-05-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Selector fault.
+  source_readings:
+  - sections/section-020/module-05/course-02-taints-tolerations-and-node-selection.md
+  prompt: A pod with nodeSelector disktype=ssd stays Pending and no node has the label.
+    What is the fix?
+  options:
+  - id: a
+    text: Label a node or correct the selector
+    explanation: Correct. The selector must match a node label.
+  - id: b
+    text: Increase replicas
+    explanation: Not correct. The selector must match a node label.
+  - id: c
+    text: Add a toleration
+    explanation: Not correct. The selector must match a node label.
+  correct_option: a
+  explanation: The selector must match a node label.
+- id: ats039-020-05-q07
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Claim states.
+  source_readings:
+  - sections/section-020/module-05/course-03-persistentvolumeclaims-and-storage.md
+  prompt: A PVC is Pending on a WaitForFirstConsumer class and no pod uses it. Is
+    this a fault?
+  options:
+  - id: a
+    text: Yes, the storage is broken
+    explanation: Not correct. Binding is delayed until a pod uses it.
+  - id: b
+    text: Yes, the node is down
+    explanation: Not correct. Binding is delayed until a pod uses it.
+  - id: c
+    text: No, it waits for a pod
+    explanation: Correct. Binding is delayed until a pod uses it.
+  correct_option: c
+  explanation: Binding is delayed until a pod uses it.
+- id: ats039-020-05-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Access mode.
+  source_readings:
+  - sections/section-020/module-05/course-03-persistentvolumeclaims-and-storage.md
+  prompt: Which access mode lets only one node mount a volume for writing?
+  options:
+  - id: a
+    text: ReadOnlyMany
+    explanation: Not correct. ReadWriteOnce limits to a single node.
+  - id: b
+    text: ReadWriteOnce
+    explanation: Correct. ReadWriteOnce limits to a single node.
+  - id: c
+    text: ReadWriteMany
+    explanation: Not correct. ReadWriteOnce limits to a single node.
+  correct_option: b
+  explanation: ReadWriteOnce limits to a single node.
+- id: ats039-020-05-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Quota symptom.
+  source_readings:
+  - sections/section-020/module-05/course-04-quotas-limit-ranges-and-node-conditions.md
+  prompt: A Deployment shows fewer pods than replicas and no scheduling events. Where
+    is the reason?
+  options:
+  - id: a
+    text: Events of the ReplicaSet, such as exceeded quota
+    explanation: Correct. Quota errors happen at pod creation.
+  - id: b
+    text: Events of the node only
+    explanation: Not correct. Quota errors happen at pod creation.
+  - id: c
+    text: The container logs
+    explanation: Not correct. Quota errors happen at pod creation.
+  correct_option: a
+  explanation: Quota errors happen at pod creation.
+- id: ats039-020-05-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Node condition.
+  source_readings:
+  - sections/section-020/module-05/course-04-quotas-limit-ranges-and-node-conditions.md
+  prompt: Which node condition makes image pulls fail and pods get evicted?
+  options:
+  - id: a
+    text: NetworkUnavailable
+    explanation: Not correct. DiskPressure signals low disk space.
+  - id: b
+    text: Ready True
+    explanation: Not correct. DiskPressure signals low disk space.
+  - id: c
+    text: DiskPressure
+    explanation: Correct. DiskPressure signals low disk space.
+  correct_option: c
+  explanation: DiskPressure signals low disk space.

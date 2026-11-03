@@ -276,6 +276,198 @@ modules:
     question_count: 10
     pass_score: 70
   - type: reading
+    title: Helm Charts And Releases
+    path: sections/section-010/module-04/course.md
+  - type: reading
+    title: Chart Anatomy And Templates
+    path: sections/section-010/module-04/course-01-chart-anatomy-and-templates.md
+  - type: reading
+    title: Installing, Upgrading And Rolling Back Releases
+    path: sections/section-010/module-04/course-02-install-upgrade-and-rollback.md
+  - type: reading
+    title: Values, Precedence And Checks
+    path: sections/section-010/module-04/course-03-values-precedence-and-checks.md
+  - type: reading
+    title: Repositories, Dependencies And Hooks
+    path: sections/section-010/module-04/course-04-repositories-dependencies-and-hooks.md
+  - type: reading
+    title: Question
+    path: sections/section-010/module-04/labs/lab-01/question.md
+  - type: lab
+    title: Upgrade And Roll Back A Helm Release Lab
+    path: sections/section-010/module-04/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: release-delivery
+    task_kind: troubleshooting
+    tags:
+    - helm
+    - release
+    - upgrade
+    - rollback
+    - values
+    learning_goals:
+    - Upgrade a Helm release with values
+    - Keep earlier values with --reuse-values
+    - Roll a release back to an earlier revision
+    resources:
+    - name: 'Helm: using Helm'
+      url: https://helm.sh/docs/intro/using_helm/
+    - name: 'Helm: chart template guide'
+      url: https://helm.sh/docs/chart_template_guide/
+  - type: reading
+    title: Summary
+    path: sections/section-010/module-04/course-06-summary.md
+  - type: quiz
+    title: 'Knowledge Check: Helm Charts And Releases'
+    path: sections/section-010/module-04/quiz.yaml
+    question_count: 10
+    pass_score: 70
+  - type: reading
+    title: Kustomize Bases, Overlays And Patches
+    path: sections/section-010/module-05/course.md
+  - type: reading
+    title: Bases And Kustomization Files
+    path: sections/section-010/module-05/course-01-bases-and-kustomization-files.md
+  - type: reading
+    title: Overlays And Patches
+    path: sections/section-010/module-05/course-02-overlays-and-patches.md
+  - type: reading
+    title: Generators, Name Suffixes And Transformers
+    path: sections/section-010/module-05/course-03-generators-name-suffixes-and-transformers.md
+  - type: reading
+    title: Components, Review And Choosing A Tool
+    path: sections/section-010/module-05/course-04-components-review-and-choosing-a-tool.md
+  - type: reading
+    title: Question
+    path: sections/section-010/module-05/labs/lab-01/question.md
+  - type: lab
+    title: Build A Production Overlay With Kustomize Lab
+    path: sections/section-010/module-05/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: release-delivery
+    task_kind: build
+    tags:
+    - kustomize
+    - overlay
+    - patch
+    - generator
+    - namespace
+    learning_goals:
+    - Create an overlay that refers to a base
+    - Change generated ConfigMap data with the merge behavior
+    - Add a strategic merge patch
+    resources:
+    - name: Declarative management with Kustomize
+      url: https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/
+    - name: Kustomize reference
+      url: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/
+  - type: reading
+    title: Summary
+    path: sections/section-010/module-05/course-06-summary.md
+  - type: quiz
+    title: 'Knowledge Check: Kustomize Bases, Overlays And Patches'
+    path: sections/section-010/module-05/quiz.yaml
+    question_count: 10
+    pass_score: 70
+  - type: reading
+    title: Configuration And Secrets In Delivery
+    path: sections/section-010/module-06/course.md
+  - type: reading
+    title: ConfigMaps And How Pods Read Them
+    path: sections/section-010/module-06/course-01-configmaps-and-how-pods-read-them.md
+  - type: reading
+    title: Secrets And Their Limits
+    path: sections/section-010/module-06/course-02-secrets-and-their-limits.md
+  - type: reading
+    title: Delivering Secrets Without Putting Them In Git
+    path: sections/section-010/module-06/course-03-delivering-secrets-without-git.md
+  - type: reading
+    title: Configuration Rollouts, Immutability And Rotation
+    path: sections/section-010/module-06/course-04-configuration-rollouts-immutability-rotation.md
+  - type: reading
+    title: Question
+    path: sections/section-010/module-06/labs/lab-01/question.md
+  - type: lab
+    title: Version Configuration And Mount A Secret Lab
+    path: sections/section-010/module-06/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: release-delivery
+    task_kind: build
+    tags:
+    - configmap
+    - secret
+    - immutable
+    - rollout
+    - volume
+    learning_goals:
+    - Replace a ConfigMap with a new immutable version
+    - Start a rollout by changing a configuration reference
+    - Mount a Secret as a read-only volume
+    resources:
+    - name: ConfigMaps
+      url: https://kubernetes.io/docs/concepts/configuration/configmap/
+    - name: Secrets
+      url: https://kubernetes.io/docs/concepts/configuration/secret/
+  - type: reading
+    title: Summary
+    path: sections/section-010/module-06/course-06-summary.md
+  - type: quiz
+    title: 'Knowledge Check: Configuration And Secrets In Delivery'
+    path: sections/section-010/module-06/quiz.yaml
+    question_count: 10
+    pass_score: 70
+  - type: reading
+    title: Rollout Controls And Disruption Safety
+    path: sections/section-010/module-07/course.md
+  - type: reading
+    title: Rollout Settings Of A Deployment
+    path: sections/section-010/module-07/course-01-rollout-settings-of-a-deployment.md
+  - type: reading
+    title: PodDisruptionBudgets And Node Drains
+    path: sections/section-010/module-07/course-02-poddisruptionbudgets-and-node-drains.md
+  - type: reading
+    title: Graceful Shutdown
+    path: sections/section-010/module-07/course-03-graceful-shutdown.md
+  - type: reading
+    title: Spreading, Capacity And Autoscaling During Rollouts
+    path: sections/section-010/module-07/course-04-spreading-capacity-and-autoscaling.md
+  - type: reading
+    title: Question
+    path: sections/section-010/module-07/labs/lab-01/question.md
+  - type: lab
+    title: Tune A Rollout And Protect It With A Budget Lab
+    path: sections/section-010/module-07/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: release-delivery
+    task_kind: build
+    tags:
+    - rollout
+    - maxsurge
+    - poddisruptionbudget
+    - prestop
+    - graceful-shutdown
+    learning_goals:
+    - Set rolling update limits and minReadySeconds
+    - Create a PodDisruptionBudget
+    - Configure a graceful shutdown with a preStop sleep
+    resources:
+    - name: Kubernetes Deployments
+      url: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+    - name: Disruptions
+      url: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+  - type: reading
+    title: Summary
+    path: sections/section-010/module-07/course-06-summary.md
+  - type: quiz
+    title: 'Knowledge Check: Rollout Controls And Disruption Safety'
+    path: sections/section-010/module-07/quiz.yaml
+    question_count: 10
+    pass_score: 70
+  - type: reading
     title: Question
     path: sections/section-010/capstone/question.md
   - type: lab
@@ -465,6 +657,198 @@ modules:
   - type: quiz
     title: 'Knowledge Check: Debugging Failed Releases'
     path: sections/section-020/module-02/quiz.yaml
+    question_count: 10
+    pass_score: 70
+  - type: reading
+    title: Debugging Inside Pods With kubectl
+    path: sections/section-020/module-03/course.md
+  - type: reading
+    title: exec, cp And port-forward
+    path: sections/section-020/module-03/course-01-exec-cp-and-port-forward.md
+  - type: reading
+    title: Ephemeral Containers And kubectl debug
+    path: sections/section-020/module-03/course-02-ephemeral-containers-and-kubectl-debug.md
+  - type: reading
+    title: Resources, OOM Kills And Limits
+    path: sections/section-020/module-03/course-03-resources-oom-kills-and-limits.md
+  - type: reading
+    title: Files, Permissions And Security Contexts
+    path: sections/section-020/module-03/course-04-files-permissions-and-security-contexts.md
+  - type: reading
+    title: Question
+    path: sections/section-020/module-03/labs/lab-01/question.md
+  - type: lab
+    title: Fix A Read-Only Filesystem And Attach A Debug Container Lab
+    path: sections/section-020/module-03/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: troubleshooting
+    task_kind: troubleshooting
+    tags:
+    - kubectl-debug
+    - ephemeral-container
+    - securitycontext
+    - emptydir
+    - readonlyrootfilesystem
+    learning_goals:
+    - Find a read-only filesystem failure from logs and the manifest
+    - Fix it with a volume and keep the hardening
+    - Attach an ephemeral container to a pod
+    resources:
+    - name: Debug running pods
+      url: https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/
+    - name: Ephemeral containers
+      url: https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/
+  - type: reading
+    title: Summary
+    path: sections/section-020/module-03/course-06-summary.md
+  - type: quiz
+    title: 'Knowledge Check: Debugging Inside Pods With kubectl'
+    path: sections/section-020/module-03/quiz.yaml
+    question_count: 10
+    pass_score: 70
+  - type: reading
+    title: Debugging Services, DNS And Ingress
+    path: sections/section-020/module-04/course.md
+  - type: reading
+    title: Service Selectors, Endpoints And Ports
+    path: sections/section-020/module-04/course-01-service-selectors-endpoints-and-ports.md
+  - type: reading
+    title: DNS And CoreDNS
+    path: sections/section-020/module-04/course-02-dns-and-coredns.md
+  - type: reading
+    title: NetworkPolicy Blocks
+    path: sections/section-020/module-04/course-03-networkpolicy-blocks.md
+  - type: reading
+    title: Ingress And Gateway Routing
+    path: sections/section-020/module-04/course-04-ingress-and-gateway-routing.md
+  - type: reading
+    title: Question
+    path: sections/section-020/module-04/labs/lab-01/question.md
+  - type: lab
+    title: Fix A Service With No Endpoints Lab
+    path: sections/section-020/module-04/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: troubleshooting
+    task_kind: troubleshooting
+    tags:
+    - service
+    - endpoints
+    - dns
+    - networkpolicy
+    - ingress
+    learning_goals:
+    - Find why a Service has no endpoints
+    - Fix selector and target port
+    - Know the full cluster DNS name of a Service
+    resources:
+    - name: Debug Services
+      url: https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/
+    - name: DNS for Services and Pods
+      url: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+  - type: reading
+    title: Summary
+    path: sections/section-020/module-04/course-06-summary.md
+  - type: quiz
+    title: 'Knowledge Check: Debugging Services, DNS And Ingress'
+    path: sections/section-020/module-04/quiz.yaml
+    question_count: 10
+    pass_score: 70
+  - type: reading
+    title: Debugging Scheduling, Storage And Cluster Dependencies
+    path: sections/section-020/module-05/course.md
+  - type: reading
+    title: How The Scheduler Decides
+    path: sections/section-020/module-05/course-01-how-the-scheduler-decides.md
+  - type: reading
+    title: Taints, Tolerations And Node Selection
+    path: sections/section-020/module-05/course-02-taints-tolerations-and-node-selection.md
+  - type: reading
+    title: PersistentVolumeClaims And Storage
+    path: sections/section-020/module-05/course-03-persistentvolumeclaims-and-storage.md
+  - type: reading
+    title: Quotas, Limit Ranges And Node Conditions
+    path: sections/section-020/module-05/course-04-quotas-limit-ranges-and-node-conditions.md
+  - type: reading
+    title: Question
+    path: sections/section-020/module-05/labs/lab-01/question.md
+  - type: lab
+    title: Fix A Quota Limit And A Pending Pod Lab
+    path: sections/section-020/module-05/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: troubleshooting
+    task_kind: troubleshooting
+    tags:
+    - scheduling
+    - pending
+    - resourcequota
+    - nodeselector
+    - events
+    learning_goals:
+    - Find why a ReplicaSet creates too few pods
+    - Raise a quota in a safe way
+    - Fix a pod with a node selector that matches no node
+    resources:
+    - name: Resource quotas
+      url: https://kubernetes.io/docs/concepts/policy/resource-quotas/
+    - name: Assign pods to nodes
+      url: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  - type: reading
+    title: Summary
+    path: sections/section-020/module-05/course-06-summary.md
+  - type: quiz
+    title: 'Knowledge Check: Debugging Scheduling, Storage And Cluster Dependencies'
+    path: sections/section-020/module-05/quiz.yaml
+    question_count: 10
+    pass_score: 70
+  - type: reading
+    title: Debugging Helm And GitOps Delivery Failures
+    path: sections/section-020/module-06/course.md
+  - type: reading
+    title: Failed Helm Releases And History
+    path: sections/section-020/module-06/course-01-failed-helm-releases-and-history.md
+  - type: reading
+    title: Chart Rendering And Values Problems
+    path: sections/section-020/module-06/course-02-chart-rendering-and-values-problems.md
+  - type: reading
+    title: GitOps Sync, Health And Drift
+    path: sections/section-020/module-06/course-03-gitops-sync-health-and-drift.md
+  - type: reading
+    title: Rollback And Recovery
+    path: sections/section-020/module-06/course-04-rollback-and-recovery.md
+  - type: reading
+    title: Question
+    path: sections/section-020/module-06/labs/lab-01/question.md
+  - type: lab
+    title: Roll Back A Bad Update And Fix Drift Lab
+    path: sections/section-020/module-06/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: troubleshooting
+    task_kind: troubleshooting
+    tags:
+    - rollback
+    - helm
+    - gitops
+    - drift
+    - rollout
+    learning_goals:
+    - Find why a rollout fails
+    - Roll back a Deployment
+    - Fix replica drift against a declared value
+    resources:
+    - name: Helm history and rollback
+      url: https://helm.sh/docs/helm/helm_rollback/
+    - name: Deployments rollback
+      url: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-back-a-deployment
+  - type: reading
+    title: Summary
+    path: sections/section-020/module-06/course-06-summary.md
+  - type: quiz
+    title: 'Knowledge Check: Debugging Helm And GitOps Delivery Failures'
+    path: sections/section-020/module-06/quiz.yaml
     question_count: 10
     pass_score: 70
   - type: reading

@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Upgrade And Roll Back A Helm Release Lab (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-039-lab-010-04
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+
+# Starting state: a Helm chart on disk and release beacon at revision 1
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the starting state
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: release-revision
+      description: The latest deployed revision of release beacon is 4
+      type: file
+      source: validation/01-release-revision.sh
+      hint: Upgrade twice, then roll back to revision 2, which makes revision 4
+    - name: replicas
+      description: beacon has three available replicas
+      type: file
+      source: validation/02-replicas.sh
+      hint: Revision 2 scaled to three replicas; the rollback returns to it
+    - name: message
+      description: The message is second after the rollback
+      type: file
+      source: validation/03-message.sh
+      hint: Rolling back to revision 2 restores its message
+
+teardown:
+  keepCluster: false

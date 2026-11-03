@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Tune A Rollout And Protect It With A Budget Lab (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-039-lab-010-07
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+
+# Starting state: a Deployment with default rollout settings and no budget
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the starting state
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: rollout-settings
+      description: dock uses maxSurge 1, maxUnavailable 0 and minReadySeconds 5
+      type: file
+      source: validation/01-rollout-settings.sh
+      hint: Set the rolling update fields and minReadySeconds in the Deployment
+    - name: budget
+      description: The PodDisruptionBudget dock-pdb requires 3 available pods for app dock
+      type: file
+      source: validation/02-budget.sh
+      hint: Create a budget with minAvailable 3 and the selector app dock
+    - name: shutdown
+      description: dock has a 20 second grace period and a 5 second preStop sleep
+      type: file
+      source: validation/03-shutdown.sh
+      hint: Set terminationGracePeriodSeconds and a preStop sleep action
+
+teardown:
+  keepCluster: false

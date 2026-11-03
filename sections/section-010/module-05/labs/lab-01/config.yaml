@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Build A Production Overlay With Kustomize Lab (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-039-lab-010-05
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+
+# Starting state: a Kustomize base on disk and an empty production overlay
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the starting state
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: replicas
+      description: prod-relay has three available replicas
+      type: file
+      source: validation/01-replicas.sh
+      hint: The overlay needs a prefix and a replicas transformer
+    - name: merged-config
+      description: The generated ConfigMap of prod-relay has MESSAGE production
+      type: file
+      source: validation/02-merged-config.sh
+      hint: Use configMapGenerator with behavior merge and the base generator name
+    - name: limit
+      description: The container has a memory limit of 128Mi
+      type: file
+      source: validation/03-limit.sh
+      hint: Add a strategic merge patch with a resources limit
+
+teardown:
+  keepCluster: false

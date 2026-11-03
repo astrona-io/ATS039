@@ -1,0 +1,62 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Fix A Quota Limit And A Pending Pod Lab (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-039-lab-020-05
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+      - busybox:1.37.0
+
+# Starting state: a tight ResourceQuota and a pod with a bad node selector
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the starting state
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: crew-available
+      description: The Deployment crew has five available replicas
+      type: file
+      source: validation/01-crew-available.sh
+      hint: Raise the quota so all replicas can be created
+    - name: quota-kept
+      description: The quota still exists and limits pods
+      type: file
+      source: validation/02-quota-kept.sh
+      hint: Change the quota, do not delete it
+    - name: wanderer-running
+      description: The pod wanderer is running without the bad node selector
+      type: file
+      source: validation/03-wanderer-running.sh
+      hint: A pod spec cannot be changed to remove a node selector, so recreate the pod
+    - name: finding
+      description: The Deployment crew records the finding in an annotation
+      type: file
+      source: validation/04-finding.sh
+      hint: Annotate the Deployment with debug/finding
+
+teardown:
+  keepCluster: false

@@ -1,0 +1,216 @@
+# Knowledge check for the module. Listed in astrona.yaml after the module summary.
+---
+schema_version: 1
+kind: question_bank
+id: ats039-010-04
+course_id: ATS039
+exam_code: KCNA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-010
+  title: 'Safe Application Releases: Strategies, Tooling And Rollback Limits'
+placement:
+  position: after
+  reading: sections/section-010/module-04/course-06-summary.md
+questions:
+- id: ats039-010-04-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Distinguish chart and application version.
+  source_readings:
+  - sections/section-010/module-04/course-01-chart-anatomy-and-templates.md
+  prompt: Which `Chart.yaml` field holds the version of the software the chart deploys?
+  options:
+  - id: a
+    text: version
+    explanation: Not correct. version is the chart version; appVersion is the application
+      version.
+  - id: b
+    text: apiVersion
+    explanation: Not correct. version is the chart version; appVersion is the application
+      version.
+  - id: c
+    text: appVersion
+    explanation: Correct. version is the chart version; appVersion is the application
+      version.
+  correct_option: c
+  explanation: version is the chart version; appVersion is the application version.
+- id: ats039-010-04-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Render without a cluster.
+  source_readings:
+  - sections/section-010/module-04/course-01-chart-anatomy-and-templates.md
+  prompt: Which command prints the manifests of a chart without contacting the cluster?
+  options:
+  - id: a
+    text: helm get manifest
+    explanation: Not correct. helm template renders locally.
+  - id: b
+    text: helm template
+    explanation: Correct. helm template renders locally.
+  - id: c
+    text: helm status
+    explanation: Not correct. helm template renders locally.
+  correct_option: b
+  explanation: helm template renders locally.
+- id: ats039-010-04-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Predict a render.
+  source_readings:
+  - sections/section-010/module-04/course-01-chart-anatomy-and-templates.md
+  prompt: A template contains `{{ .Values.ui.message | quote }}` and the value is
+    true. What is rendered?
+  options:
+  - id: a
+    text: '"true" as a quoted string'
+    explanation: Correct. quote wraps the value in double quotes so YAML keeps text.
+  - id: b
+    text: true as a boolean
+    explanation: Not correct. quote wraps the value in double quotes so YAML keeps
+      text.
+  - id: c
+    text: nothing
+    explanation: Not correct. quote wraps the value in double quotes so YAML keeps
+      text.
+  correct_option: a
+  explanation: quote wraps the value in double quotes so YAML keeps text.
+- id: ats039-010-04-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Locate release state.
+  source_readings:
+  - sections/section-010/module-04/course-02-install-upgrade-and-rollback.md
+  prompt: Where does Helm 3 and later store the history of a release?
+  options:
+  - id: a
+    text: In a Tiller pod
+    explanation: Not correct. Each revision is a Secret of type helm.sh/release.v1.
+  - id: b
+    text: In the chart directory
+    explanation: Not correct. Each revision is a Secret of type helm.sh/release.v1.
+  - id: c
+    text: In Secrets in the release namespace
+    explanation: Correct. Each revision is a Secret of type helm.sh/release.v1.
+  correct_option: c
+  explanation: Each revision is a Secret of type helm.sh/release.v1.
+- id: ats039-010-04-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read history.
+  source_readings:
+  - sections/section-010/module-04/course-02-install-upgrade-and-rollback.md
+  prompt: After an install, an upgrade and a rollback to revision 1, which revision
+    is deployed?
+  options:
+  - id: a
+    text: Revision 1
+    explanation: Not correct. A rollback creates a new revision.
+  - id: b
+    text: Revision 3
+    explanation: Correct. A rollback creates a new revision.
+  - id: c
+    text: Revision 2
+    explanation: Not correct. A rollback creates a new revision.
+  correct_option: b
+  explanation: A rollback creates a new revision.
+- id: ats039-010-04-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Avoid reset values.
+  source_readings:
+  - sections/section-010/module-04/course-02-install-upgrade-and-rollback.md
+  prompt: What does an upgrade do with a value that is not set again and has no --reuse-values?
+  options:
+  - id: a
+    text: Returns it to the chart default
+    explanation: Correct. Unset values return to the defaults.
+  - id: b
+    text: Keeps the previous value
+    explanation: Not correct. Unset values return to the defaults.
+  - id: c
+    text: Fails with an error
+    explanation: Not correct. Unset values return to the defaults.
+  correct_option: a
+  explanation: Unset values return to the defaults.
+- id: ats039-010-04-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Order of precedence.
+  source_readings:
+  - sections/section-010/module-04/course-03-values-precedence-and-checks.md
+  prompt: A key is set in values.yaml, in a file passed with -f and with --set. Which
+    wins?
+  options:
+  - id: a
+    text: The values.yaml value
+    explanation: Not correct. --set has the highest precedence.
+  - id: b
+    text: The -f file value
+    explanation: Not correct. --set has the highest precedence.
+  - id: c
+    text: The --set value
+    explanation: Correct. --set has the highest precedence.
+  correct_option: c
+  explanation: "--set has the highest precedence."
+- id: ats039-010-04-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Lists in overrides.
+  source_readings:
+  - sections/section-010/module-04/course-03-values-precedence-and-checks.md
+  prompt: An override file defines a list that also exists in values.yaml. What happens?
+  options:
+  - id: a
+    text: The lists are merged by index
+    explanation: Not correct. Maps merge by key; lists are replaced.
+  - id: b
+    text: The whole default list is replaced
+    explanation: Correct. Maps merge by key; lists are replaced.
+  - id: c
+    text: The default list is kept
+    explanation: Not correct. Maps merge by key; lists are replaced.
+  correct_option: b
+  explanation: Maps merge by key; lists are replaced.
+- id: ats039-010-04-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose a pre-install check.
+  source_readings:
+  - sections/section-010/module-04/course-03-values-precedence-and-checks.md
+  prompt: Which feature rejects a wrong value type before any install?
+  options:
+  - id: a
+    text: values.schema.json
+    explanation: Correct. Helm validates merged values against the schema.
+  - id: b
+    text: helm history
+    explanation: Not correct. Helm validates merged values against the schema.
+  - id: c
+    text: helm repo update
+    explanation: Not correct. Helm validates merged values against the schema.
+  correct_option: a
+  explanation: Helm validates merged values against the schema.
+- id: ats039-010-04-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Use hooks.
+  source_readings:
+  - sections/section-010/module-04/course-04-repositories-dependencies-and-hooks.md
+  prompt: A migration must run before new pods start on every upgrade. Which annotation
+    fits?
+  options:
+  - id: a
+    text: 'helm.sh/hook: post-install'
+    explanation: Not correct. pre-upgrade hooks run before the upgrade applies objects.
+  - id: b
+    text: 'helm.sh/hook: test'
+    explanation: Not correct. pre-upgrade hooks run before the upgrade applies objects.
+  - id: c
+    text: 'helm.sh/hook: pre-upgrade'
+    explanation: Correct. pre-upgrade hooks run before the upgrade applies objects.
+  correct_option: c
+  explanation: pre-upgrade hooks run before the upgrade applies objects.

@@ -30,3 +30,19 @@ You will work through Build And Release Pipelines, GitOps And Deployment Configu
 - Compare rolling, blue-green and canary strategies.
 - Identify evidence needed to promote or reverse a release.
 - Explain compatibility limits of rollback.
+- Describe the files of a Helm chart and how templates use values.
+- Install, upgrade, inspect and roll back a Helm release.
+- Predict which value wins when several sources set the same key.
+- Explain what chart repositories, dependencies and hooks add.
+- Describe the roles of a base, an overlay and a kustomization file.
+- Change an environment with transformers, strategic merge patches and JSON patches.
+- Explain how generators and name suffix hashes trigger rollouts.
+- Review a Kustomize result before applying it.
+- Compare environment variables and mounted files as ways to read configuration.
+- Explain what a Secret protects and what protects it further.
+- Choose a method to deliver secrets with a GitOps workflow.
+- Make a configuration change roll out in a controlled way.
+- Tune maxSurge, maxUnavailable, minReadySeconds and the deadline of a rollout.
+- Explain what a PodDisruptionBudget protects and what it does not.
+- Describe how a pod shuts down and configure it for graceful shutdown.
+- Explain how spreading and capacity limits affect a rollout.

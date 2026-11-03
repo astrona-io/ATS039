@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dock
+  namespace: outpost
+  labels:
+    app: dock
+spec:
+  replicas: 4
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: dock
+  template:
+    metadata:
+      labels:
+        app: dock
+    spec:
+      terminationGracePeriodSeconds: 20
+      containers:
+        - name: dock
+          image: ghcr.io/stefanprodan/podinfo:6.15.0
+          lifecycle:
+            preStop:
+              sleep:
+                seconds: 5
+          ports:
+            - name: http
+              containerPort: 9898
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: dock-pdb
+  namespace: outpost
+spec:
+  minAvailable: 3
+  selector:
+    matchLabels:
+      app: dock

@@ -1,0 +1,5 @@
+# Starting state: the outpost namespace only. The bootstrap script writes the Kustomize base.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: outpost

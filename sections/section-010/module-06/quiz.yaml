@@ -1,0 +1,211 @@
+# Knowledge check for the module. Listed in astrona.yaml after the module summary.
+---
+schema_version: 1
+kind: question_bank
+id: ats039-010-06
+course_id: ATS039
+exam_code: KCNA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-010
+  title: 'Safe Application Releases: Strategies, Tooling And Rollback Limits'
+placement:
+  position: after
+  reading: sections/section-010/module-06/course-06-summary.md
+questions:
+- id: ats039-010-06-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Know update behavior.
+  source_readings:
+  - sections/section-010/module-06/course-01-configmaps-and-how-pods-read-them.md
+  prompt: A ConfigMap key is read by a container as an environment variable. The ConfigMap
+    changes. What happens in the running container?
+  options:
+  - id: a
+    text: The variable changes at once
+    explanation: Not correct. Environment variables are set at container start.
+  - id: b
+    text: The pod restarts at once
+    explanation: Not correct. Environment variables are set at container start.
+  - id: c
+    text: The variable keeps the old value until the pod is replaced
+    explanation: Correct. Environment variables are set at container start.
+  correct_option: c
+  explanation: Environment variables are set at container start.
+- id: ats039-010-06-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know volume refresh.
+  source_readings:
+  - sections/section-010/module-06/course-01-configmaps-and-how-pods-read-them.md
+  prompt: Which mount does the kubelet not refresh when the ConfigMap changes?
+  options:
+  - id: a
+    text: A normal ConfigMap volume
+    explanation: Not correct. subPath mounts are never updated.
+  - id: b
+    text: A volume mounted with subPath
+    explanation: Correct. subPath mounts are never updated.
+  - id: c
+    text: A projected volume
+    explanation: Not correct. subPath mounts are never updated.
+  correct_option: b
+  explanation: subPath mounts are never updated.
+- id: ats039-010-06-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Recognise the status.
+  source_readings:
+  - sections/section-010/module-06/course-01-configmaps-and-how-pods-read-them.md
+  prompt: A pod refers to a ConfigMap key that does not exist. Which status appears?
+  options:
+  - id: a
+    text: CreateContainerConfigError
+    explanation: Correct. The container cannot be configured.
+  - id: b
+    text: ImagePullBackOff
+    explanation: Not correct. The container cannot be configured.
+  - id: c
+    text: Completed
+    explanation: Not correct. The container cannot be configured.
+  correct_option: a
+  explanation: The container cannot be configured.
+- id: ats039-010-06-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Understand encoding.
+  source_readings:
+  - sections/section-010/module-06/course-02-secrets-and-their-limits.md
+  prompt: What protects the value of a Secret that is only Base64 encoded?
+  options:
+  - id: a
+    text: The encoding is encryption
+    explanation: Not correct. Anyone who can read the object can decode it.
+  - id: b
+    text: The Secret type
+    explanation: Not correct. Anyone who can read the object can decode it.
+  - id: c
+    text: Nothing; Base64 is an encoding
+    explanation: Correct. Anyone who can read the object can decode it.
+  correct_option: c
+  explanation: Anyone who can read the object can decode it.
+- id: ats039-010-06-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Find the broad access.
+  source_readings:
+  - sections/section-010/module-06/course-02-secrets-and-their-limits.md
+  prompt: Who can read every Secret of a namespace even without get permission on
+    Secrets?
+  options:
+  - id: a
+    text: Anyone who can list namespaces
+    explanation: Not correct. A pod can mount a Secret and print it.
+  - id: b
+    text: Anyone who can create a pod in the namespace
+    explanation: Correct. A pod can mount a Secret and print it.
+  - id: c
+    text: Anyone who reads node names
+    explanation: Not correct. A pod can mount a Secret and print it.
+  correct_option: b
+  explanation: A pod can mount a Secret and print it.
+- id: ats039-010-06-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Prefer files.
+  source_readings:
+  - sections/section-010/module-06/course-02-secrets-and-their-limits.md
+  prompt: Why are mounted Secret files often preferred to environment variables?
+  options:
+  - id: a
+    text: Environment variables leak to child processes and dumps
+    explanation: Correct. Files can have restrictive modes and are not inherited.
+  - id: b
+    text: Files are encrypted
+    explanation: Not correct. Files can have restrictive modes and are not inherited.
+  - id: c
+    text: Variables cannot hold text
+    explanation: Not correct. Files can have restrictive modes and are not inherited.
+  correct_option: a
+  explanation: Files can have restrictive modes and are not inherited.
+- id: ats039-010-06-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose a safe Git method.
+  source_readings:
+  - sections/section-010/module-06/course-03-delivering-secrets-without-git.md
+  prompt: Which tool lets you commit an encrypted Secret that only a cluster controller
+    can decrypt?
+  options:
+  - id: a
+    text: kubectl describe
+    explanation: Not correct. The sealed object is safe to commit.
+  - id: b
+    text: A ConfigMap generator
+    explanation: Not correct. The sealed object is safe to commit.
+  - id: c
+    text: Sealed Secrets
+    explanation: Correct. The sealed object is safe to commit.
+  correct_option: c
+  explanation: The sealed object is safe to commit.
+- id: ats039-010-06-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Keep values out of Git.
+  source_readings:
+  - sections/section-010/module-06/course-03-delivering-secrets-without-git.md
+  prompt: Which setup keeps the secret value out of Git completely?
+  options:
+  - id: a
+    text: A plain Secret in a private repository
+    explanation: Not correct. Git holds only a reference.
+  - id: b
+    text: External Secrets Operator with a secret store
+    explanation: Correct. Git holds only a reference.
+  - id: c
+    text: SOPS with the key in the repository
+    explanation: Not correct. Git holds only a reference.
+  correct_option: b
+  explanation: Git holds only a reference.
+- id: ats039-010-06-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Start a rollout from config.
+  source_readings:
+  - sections/section-010/module-06/course-04-configuration-rollouts-immutability-rotation.md
+  prompt: A Deployment reads a ConfigMap by a fixed name. Which action starts a rollout
+    after a ConfigMap change?
+  options:
+  - id: a
+    text: kubectl rollout restart deployment/NAME
+    explanation: Correct. The restart changes the pod template.
+  - id: b
+    text: kubectl get configmap
+    explanation: Not correct. The restart changes the pod template.
+  - id: c
+    text: kubectl describe deployment
+    explanation: Not correct. The restart changes the pod template.
+  correct_option: a
+  explanation: The restart changes the pod template.
+- id: ats039-010-06-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Rotate safely.
+  source_readings:
+  - sections/section-010/module-06/course-04-configuration-rollouts-immutability-rotation.md
+  prompt: What is the safe order to rotate a database password used by pods?
+  options:
+  - id: a
+    text: Remove the old password, then add the new
+    explanation: Not correct. Both values must work during the rollout.
+  - id: b
+    text: Change it and wait
+    explanation: Not correct. Both values must work during the rollout.
+  - id: c
+    text: Add the new password, roll the pods, then remove the old
+    explanation: Correct. Both values must work during the rollout.
+  correct_option: c
+  explanation: Both values must work during the rollout.
