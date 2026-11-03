@@ -1,0 +1,8 @@
+# Annotation recorded on the Service by the reference solution (patch).
+metadata:
+  annotations:
+    kubernetes.io/change-cause: switched to green after readiness check
+spec:
+  selector:
+    app: scout
+    version: green

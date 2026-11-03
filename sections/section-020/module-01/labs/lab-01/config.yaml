@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Find And Fix Three Application Failures (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-039-lab-020-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+
+# Starting state: starfleet plus beacon (crash loop), relay (bad key) and lookout (empty endpoints).
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create starfleet and the three faulty workloads
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: beacon-running
+      description: beacon runs and stays up
+      type: file
+      source: validation/validate-beacon-running.sh
+      hint: Read kubectl logs --previous for the beacon pod. The log names the variable and the value the process expects.
+    - name: relay-running
+      description: relay starts with a valid configuration reference
+      type: file
+      source: validation/validate-relay-running.sh
+      hint: Describe the relay pod and read the event. Compare the key in the Deployment with the keys in the ConfigMap relay-config.
+    - name: lookout-endpoints
+      description: The Service lookout has endpoints
+      type: file
+      source: validation/validate-lookout-endpoints.sh
+      hint: Compare the selector of the Service lookout with the labels of the lookout pods.
+    - name: lookout-serves
+      description: shuttle gets HTTP 200 from lookout
+      type: file
+      source: validation/validate-lookout-serves.sh
+      hint: Request /healthz on the Service lookout from the shuttle pod.
+
+teardown:
+  keepCluster: false

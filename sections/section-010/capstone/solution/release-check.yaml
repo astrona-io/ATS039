@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: release-check
+  namespace: outpost
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: check
+          image: curlimages/curl:8.22.0
+          command:
+            - sh
+            - -c
+            - 'code=$(curl -s -o /dev/null -m 5 -w "%{http_code}" http://scout.outpost.svc.cluster.local/healthz); echo "status $code"; [ "$code" = "200" ]'

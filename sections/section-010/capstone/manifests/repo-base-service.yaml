@@ -1,0 +1,12 @@
+# Service in the base. It selects every pod with app=scout, stable and canary.
+apiVersion: v1
+kind: Service
+metadata:
+  name: scout
+spec:
+  selector:
+    app: scout
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

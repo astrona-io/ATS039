@@ -7,7 +7,7 @@ exam_objectives:
 
 This section teaches build and release pipelines; gitops and deployment configuration; safe application releases. These ideas help you explain system behavior and choose a suitable approach in a KCNA scenario.
 
-You will work through Build And Release Pipelines, GitOps And Deployment Configuration, Safe Application Releases. Each module introduces its goals, teaches the concepts through examples, and closes with a summary. An original YAML question bank is prepared for the end of the section, with answer explanations for future quiz integration.
+You will work through Build And Release Pipelines, GitOps And Deployment Configuration, Safe Application Releases. Each module introduces its goals, teaches the concepts through examples and a playground, adds a graded lab after the last part, and closes with a summary. The section ends with a capstone lab and a knowledge check with answer explanations.
 
 ## Learning Outcomes
 

@@ -5,6 +5,14 @@ exam_objectives:
 ---
 # Summary
 
-A pipeline turns source revisions into checked, identifiable artifacts. Continuous integration gives feedback on configured checks, and promoting the same artifact preserves the relationship between test evidence and deployed bytes.
+A delivery pipeline turns a reviewed source revision into a checked, identifiable artifact. Each stage is a process whose exit code decides whether the change continues. Continuous integration gives fast feedback on the checks that were configured, and a passing run proves only those checks.
 
-Continuous delivery keeps changes releasable; continuous deployment automates the deployment decision. Deployment can be separated from feature exposure. Release control also needs scoped identities, a traceable record and recovery plans for configuration and data changes.
+An image tag can move to different content, while a digest names exact content. A release record that links the source revision, the controlled build inputs and the artifact digest lets a team explain what was tested and what runs. Building once and promoting the same image reference keeps the test evidence connected to the deployed bytes, and environment-specific values stay in configuration such as a ConfigMap.
+
+Continuous delivery keeps every passing change releasable and adds an approval gate before production. Continuous deployment removes that gate and deploys automatically. Deploying code is separate from exposing a feature, and an image rollback does not undo configuration or data changes.
+
+- A check is a process: exit code `0` continues the pipeline, any other code stops it.
+- A digest is immutable; a tag is not.
+- Promote the artifact, not a rebuild; change only the configuration.
+
+<!-- astrona:playground:destroy -->

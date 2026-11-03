@@ -5,35 +5,130 @@ exam_objectives:
 ---
 # Intended Versions And Observed Progress
 
-The team requests version two of `scout`, but users still receive version one responses. A release declaration describes intent; the live replica set, images and traffic path show what users can actually reach. A rollout can be partially complete while old and new versions coexist.
+A release has two sides. The intended side is what the Deployment declares: a Pod template with an image, environment values and probes. The observed side is what runs: ReplicaSets, Pods, their image identities and the traffic that reaches them. A failed release is a gap between the two. This part creates a release that stalls and reads the gap from the cluster.
 
-Compare the desired Pod template with observed replicas and their artifact identities. A mutable tag can hide differences between containers whose image strings match. A digest provides stronger artifact identity. Labels help identify versions, but a label alone does not prove which bytes are running.
+A Deployment controller creates a new ReplicaSet whenever the Pod template changes. It scales the new ReplicaSet up and the old one down in steps. The strategy `RollingUpdate` limits the steps with two numbers: `maxSurge`, how many Pods above the desired count may exist, and `maxUnavailable`, how many Pods may be missing. A new Pod counts as available only after it is ready, so a Pod that never becomes ready stops the rollout while the old Pods keep serving.
 
-Read availability and rollout conditions with events and probe evidence. A new Pod that cannot schedule contributes no new serving capacity. A new container that starts but fails readiness can leave old replicas serving traffic. A failed startup or liveness check may produce repeated restarts instead.
+```mermaid
+flowchart TB
+    D["Deployment: desired template"] --> N["New ReplicaSet"]
+    D --> O["Old ReplicaSet"]
+    N --> NP["New Pods: not ready"]
+    O --> OP["Old Pods: serving"]
+    S["Service"] --> OP
+```
 
-The traffic configuration can also send users to the wrong workload. A Service selector that matches only old Pods or a route pointing to a previous backend can preserve old behavior after new Pods become healthy. Deployment status and traffic destination therefore need separate checks.
+The diagram shows a stalled rollout. The Service sends traffic only to ready Pods, so users keep reaching the old version.
 
-A progress deadline signals that expected progress has not occurred. It does not identify every possible cause or establish that an automatic rollback happened. Check the controller's observed state and the release system's actual actions.
+## Create a healthy release
 
-For a stale-version symptom, follow the chain from declared artifact to created replicas, readiness, endpoint selection and response behavior. If the new replicas are not ready, repair their startup or configuration. If they are ready but receive no traffic, examine selection and routing rather than rebuilding the same image blindly.
+Save this as `deployment-lookout.yaml`:
 
-## Reconciling The Release Record With User Traffic
+<!-- astrona:playground:renew -->
 
-The release record states digest A, the Deployment template requests it, and new Pods report the expected artifact. These observations establish increasingly concrete evidence of version selection. The final question is whether the user's request reaches those Pods and receives their intended behavior.
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lookout
+  namespace: outpost
+spec:
+  replicas: 2
+  progressDeadlineSeconds: 60
+  selector:
+    matchLabels:
+      app: lookout
+  template:
+    metadata:
+      labels:
+        app: lookout
+    spec:
+      containers:
+        - name: lookout
+          image: ghcr.io/stefanprodan/podinfo:6.15.0
+          env:
+            - name: PODINFO_UI_MESSAGE
+              value: lookout-v1
+          ports:
+            - name: http
+              containerPort: 9898
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+```
 
-A Service selector can still target old labels. A gateway can still reference an earlier backend. A client can retain an old connection while replacement progresses. A complete diagnosis follows the actual traffic path instead of equating new Pod creation with universal exposure.
+Apply it and wait for the rollout:
 
-Conversely, mixed responses during a rolling update can be expected because old and new replicas coexist. The application should support that overlap, and the release observer should compare against the current rollout phase. Mixed responses after the old replicas and routes are gone suggest a different source, such as caching or another environment.
+```sh
+kubectl apply -f deployment-lookout.yaml
+kubectl -n outpost rollout status deployment/lookout --timeout=120s
+```
 
-## Probe Failures And False Confidence
+The field `progressDeadlineSeconds` is the time the controller waits for progress before it marks the rollout as failed. The default is 600 seconds; this example uses 60 so a failure shows quickly.
 
-A readiness check hitting the wrong port can block healthy application instances. A readiness endpoint that returns success without verifying critical behavior can admit unhealthy ones. Both are configuration or design issues, but their symptoms point in opposite directions. Diagnose what the check actually measures before changing its threshold.
+## Release a version that cannot become ready
 
-If a new container is repeatedly restarted by liveness, the rollout may never gain stable availability. A slow initialization protected by startup behavior has a different contract. A failed probe is therefore meaningful only with its type, target and triggering action.
+Change the readiness path to one that does not exist and change the message, which creates a new Pod template:
 
-Track the latest template generation, observed controller progress, replica population and routing evidence. An old event can explain a past failure but not the current revision. These details help establish whether the release is still blocked, has recovered or completed with an application-level regression that requires further correction.
+```sh
+kubectl -n outpost patch deployment lookout --type json -p '[{"op":"replace","path":"/spec/template/spec/containers/0/readinessProbe/httpGet/path","value":"/missing"},{"op":"replace","path":"/spec/template/spec/containers/0/env/0/value","value":"lookout-v2"}]'
+kubectl -n outpost get pods -l app=lookout
+```
+
+The list shows old Pods that are `1/1` ready and a new Pod that is `Running` but `0/1`. The container started, but the probe fails.
+
+## Compare intent and observation
+
+First read the intent. The Deployment holds the template and its revision number:
+
+```sh
+kubectl -n outpost get deployment lookout -o jsonpath='{.spec.template.spec.containers[0].image}{"\n"}{.spec.template.spec.containers[0].env[0].value}{"\n"}'
+kubectl -n outpost get deployment lookout -o jsonpath='{.metadata.annotations.deployment\.kubernetes\.io/revision}{"\n"}'
+```
+
+Then read what exists. Each ReplicaSet carries its own revision and its Pod counts:
+
+```sh
+kubectl -n outpost get replicaset -l app=lookout -o custom-columns=NAME:.metadata.name,REVISION:.metadata.annotations.deployment\\.kubernetes\\.io/revision,DESIRED:.spec.replicas,READY:.status.readyReplicas
+```
+
+Two ReplicaSets exist. The new one has a higher revision and no ready Pods; the old one still has ready Pods. The status fields of the Deployment summarize the gap:
+
+```sh
+kubectl -n outpost get deployment lookout -o jsonpath='desired={.spec.replicas} updated={.status.updatedReplicas} ready={.status.readyReplicas} available={.status.availableReplicas} unavailable={.status.unavailableReplicas}{"\n"}'
+```
+
+A healthy completed rollout has `updated`, `ready` and `available` equal to `desired`. Here `updated` is higher than `ready`, which shows that new Pods exist but do not serve.
+
+## Read the conditions and the events
+
+The Deployment keeps two conditions. `Available` says that the minimum number of Pods is ready. `Progressing` says whether the rollout moves. After 60 seconds without progress, `Progressing` changes to `False` with the reason `ProgressDeadlineExceeded`:
+
+```sh
+kubectl -n outpost get deployment lookout -o jsonpath='{range .status.conditions[*]}{.type}={.status} reason={.reason}{"\n"}{end}'
+kubectl -n outpost describe pod -l app=lookout
+```
+
+The Pod events show `Readiness probe failed` with the HTTP status the probe received, here `404`. The condition tells you that the rollout stalled. The Pod event tells you why. Reading both avoids a common mistake: the Deployment does not stop the new Pods and does not roll back on its own. It leaves the stalled state in place and waits for a person or a tool to act.
+
+## Image identity
+
+A tag such as `6.15.0` is a name that a registry can point at different content over time. A digest, which looks like `sha256:` followed by a long hash, names exactly one image. To see which image a running container uses, read `imageID` from the Pod status:
+
+```sh
+kubectl -n outpost get pods -l app=lookout -o jsonpath='{range .items[*]}{.metadata.name} {.spec.containers[0].image} {.status.containerStatuses[0].imageID}{"\n"}{end}'
+```
+
+Two Pods with the same `image` string can have different `imageID` values when a tag was moved between their start times. Compare the `imageID` of old and new Pods when users report old behavior although the new tag is deployed. Labels help to group Pods by version, but a label does not prove which image bytes run.
+
+Clean up:
+
+```sh
+kubectl -n outpost delete deployment lookout
+```
 
 ## Common pitfalls
 
 > [!WARNING]
-> Labels and desired image strings do not prove the served version. A failed progress condition is evidence of a stalled rollout, not proof of an automatic rollback.
+> A successful `kubectl apply` or `kubectl patch` means the API server accepted the change, not that the release works. A Pod that is `Running` is not necessarily ready. A Deployment does not roll back by itself when a rollout stalls. Matching image tags do not prove matching image content; compare `imageID`.

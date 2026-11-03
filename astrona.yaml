@@ -1,9 +1,16 @@
-# Reading-only course. YAML assessments are registered separately in assessments/index.yaml.
+# Course manifest. One entry per section under `modules:`. Each section lists,
+# in order: its README, then for each module the landing page (course.md), its
+# parts (course-0N-*.md), the lab's question.md reading and the `type: lab`
+# entry after the last part, and the module summary. The section capstone and
+# the knowledge check close the section. Playgrounds are not listed: the
+# landing page's playground marker shows them. solution.md is never listed.
+#
+# Every `path:` is relative to this file.
+
 training:
   id: ATS039
   title: 'KCNA: Cloud Native Application Delivery'
-  description: Concept lessons, diagrams and original scenario assessments covering every published objective
-    in this KCNA domain. No labs or playgrounds.
+  description: 'Training material covering the KCNA Cloud Native Application Delivery domain: build and release pipelines, GitOps and deployment configuration with Helm and Kustomize, safe application releases (rolling, blue-green, canary), and debugging application failures and failed releases. Each module pairs a layered reader with an ungraded playground and a graded lab. Each section closes with a capstone and a knowledge check. Targets Kubernetes 1.35.'
   certification:
     name: Kubernetes and Cloud Native Associate
     code: KCNA
@@ -32,8 +39,7 @@ modules:
     path: sections/intro/course-03-how-this-course-is-made.md
 - id: module-010
   title: Application Delivery
-  description: Concept lessons and scenario reasoning for Application Delivery.
-  maturity: alpha
+  description: Build and release pipelines, GitOps and deployment configuration, and safe application releases, with a playground and a graded lab for each module and a capstone.
   content:
   - type: reading
     title: 'Application Delivery: Introduction'
@@ -48,6 +54,34 @@ modules:
     title: Delivery, Deployment And Promotion Decisions
     path: sections/section-010/module-01/course-02-delivery-deployment-and-promotion-decisions.md
   - type: reading
+    title: Question
+    path: sections/section-010/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Promote One Image From Staging To Production Lab
+    path: sections/section-010/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: release-pipeline
+    task_kind: build
+    tags:
+    - release
+    - image-reference
+    - promotion
+    - annotations
+    - configmap
+    - job
+    - envfrom
+    - immutable-artifact
+    learning_goals:
+    - Promote the exact image reference that ran in staging to production without using a mutable tag
+    - Carry release annotations and configuration with the promoted workload
+    - Run a Job that acts as a pipeline check before the release counts as done
+    resources:
+    - name: Kubernetes Deployments
+      url: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+    - name: Kubernetes Jobs
+      url: https://kubernetes.io/docs/concepts/workloads/controllers/job/
+  - type: reading
     title: Summary
     path: sections/section-010/module-01/course-03-summary.md
   - type: reading
@@ -59,6 +93,34 @@ modules:
   - type: reading
     title: Helm, Kustomize And Configuration Rendering
     path: sections/section-010/module-02/course-02-helm-kustomize-and-configuration-rendering.md
+  - type: reading
+    title: Question
+    path: sections/section-010/module-02/labs/lab-01/question.md
+  - type: lab
+    title: Correct Drift And Render With Kustomize Lab
+    path: sections/section-010/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: gitops
+    task_kind: build
+    tags:
+    - gitops
+    - drift
+    - reconciliation
+    - kustomize
+    - overlay
+    - configmap
+    - desired-state
+    - apply
+    learning_goals:
+    - Compare live state with the desired state in a repository stand-in and correct the drift
+    - Remove a workload that the desired state does not list
+    - Render and apply a Kustomize overlay on top of a base
+    resources:
+    - name: Declarative management with Kustomize
+      url: https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/
+    - name: Kubernetes objects management
+      url: https://kubernetes.io/docs/concepts/overview/working-with-objects/object-management/
   - type: reading
     title: Summary
     path: sections/section-010/module-02/course-03-summary.md
@@ -72,12 +134,69 @@ modules:
     title: Blue-Green, Canary And Release Evidence
     path: sections/section-010/module-03/course-02-blue-green-canary-and-release-evidence.md
   - type: reading
+    title: Question
+    path: sections/section-010/module-03/labs/lab-01/question.md
+  - type: lab
+    title: Switch Blue-Green Traffic And Roll Back A Stuck Release Lab
+    path: sections/section-010/module-03/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: rollout
+    task_kind: build
+    tags:
+    - blue-green
+    - rollback
+    - rollout
+    - readiness-probe
+    - service-selector
+    - change-cause
+    - rollout-undo
+    learning_goals:
+    - Switch a Service from a blue Deployment to a green Deployment after checking readiness
+    - Roll back a stuck rollout with kubectl rollout undo
+    - Record the cutover in the change-cause annotation
+    resources:
+    - name: Kubernetes Deployments
+      url: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+    - name: Kubernetes Services
+      url: https://kubernetes.io/docs/concepts/services-networking/service/
+  - type: reading
     title: Summary
     path: sections/section-010/module-03/course-03-summary.md
+  - type: reading
+    title: Question
+    path: sections/section-010/capstone/question.md
+  - type: lab
+    title: Release Scout Through A Delivery Pipeline Capstone
+    path: sections/section-010/capstone
+    difficulty: advanced
+    estimated_duration: 45m
+    topic: release-delivery
+    task_kind: build
+    tags:
+    - kustomize
+    - overlay
+    - canary
+    - release-check
+    - job
+    - change-cause
+    - service-endpoints
+    learning_goals:
+    - Build a production Kustomize overlay from a repository stand-in and apply it
+    - Add a canary Deployment behind the same Service with a 3:1 split
+    - Run a release check Job and record the release evidence
+    resources:
+    - name: Declarative management with Kustomize
+      url: https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/
+    - name: Kubernetes Jobs
+      url: https://kubernetes.io/docs/concepts/workloads/controllers/job/
+  - type: quiz
+    title: 'Knowledge Check: Application Delivery'
+    path: sections/section-010/quiz.yaml
+    pass_score: 70
 - id: module-020
   title: Debugging
-  description: Concept lessons and scenario reasoning for Debugging.
-  maturity: alpha
+  description: Diagnosing application failures and failed releases, with a playground and a graded lab for each module and a capstone.
   content:
   - type: reading
     title: 'Debugging: Introduction'
@@ -92,6 +211,33 @@ modules:
     title: Configuration, Dependencies And Request Failures
     path: sections/section-020/module-01/course-02-configuration-dependencies-and-request-failures.md
   - type: reading
+    title: Question
+    path: sections/section-020/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Find And Fix Three Application Failures Lab
+    path: sections/section-020/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: troubleshooting
+    task_kind: troubleshooting
+    tags:
+    - crashloopbackoff
+    - logs-previous
+    - exit-code
+    - createcontainerconfigerror
+    - configmap
+    - endpoints
+    - service-selector
+    learning_goals:
+    - Read the previous log and exit code of a crash-looping container and correct its setting
+    - Find a missing ConfigMap key from pod events and correct the reference
+    - Fix a Service selector that leaves the endpoint list empty
+    resources:
+    - name: Debug Pods
+      url: https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/
+    - name: Debug Services
+      url: https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/
+  - type: reading
     title: Summary
     path: sections/section-020/module-01/course-03-summary.md
   - type: reading
@@ -104,5 +250,67 @@ modules:
     title: Reproduce, Correct And Verify
     path: sections/section-020/module-02/course-02-reproduce-correct-and-verify.md
   - type: reading
+    title: Question
+    path: sections/section-020/module-02/labs/lab-01/question.md
+  - type: lab
+    title: Fix Forward A Stalled Release Lab
+    path: sections/section-020/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: troubleshooting
+    task_kind: troubleshooting
+    tags:
+    - rollout
+    - progress-deadline
+    - readiness-probe
+    - replicaset
+    - conditions
+    - fix-forward
+    - change-cause
+    learning_goals:
+    - Compare updated, ready and available replicas with the desired count to find a stalled rollout
+    - Read the Progressing condition and the pod events to find a failing readiness probe
+    - Fix the release forward and record the reason in the change-cause annotation
+    resources:
+    - name: Kubernetes Deployments
+      url: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+    - name: Configure liveness, readiness and startup probes
+      url: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  - type: reading
     title: Summary
     path: sections/section-020/module-02/course-03-summary.md
+  - type: reading
+    title: Question
+    path: sections/section-020/capstone/question.md
+  - type: lab
+    title: Debug A Broken Delivery In Starfleet Capstone
+    path: sections/section-020/capstone
+    difficulty: advanced
+    estimated_duration: 45m
+    topic: troubleshooting
+    task_kind: troubleshooting
+    tags:
+    - stalled-rollout
+    - crashloopbackoff
+    - configmap
+    - rollout-restart
+    - service-selector
+    - endpoints
+    - deployment-uid
+    learning_goals:
+    - Fix a stalled revision forward and record the change
+    - Correct a ConfigMap value behind a crash loop and make the container read it
+    - Repair a Service selector, all without recreating the Deployments
+    resources:
+    - name: Debug Pods
+      url: https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/
+    - name: Debug Services
+      url: https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/
+  - type: quiz
+    title: 'Knowledge Check: Debugging'
+    path: sections/section-020/quiz.yaml
+    pass_score: 70
+  - type: quiz
+    title: 'Final Knowledge Check: Cloud Native Application Delivery'
+    path: sections/final-domain-quiz.yaml
+    pass_score: 70

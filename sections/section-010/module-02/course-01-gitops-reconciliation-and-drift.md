@@ -5,42 +5,112 @@ exam_objectives:
 ---
 # GitOps Reconciliation And Drift
 
-The team declares that `scout` should run version two with three replicas. GitOps is an operating approach based on declarative desired state that is versioned and immutable, pulled automatically and continuously reconciled. A repository can provide a reviewable history of intended changes, while a controller compares the declared state with the live environment.
+A team that deploys with `kubectl apply` from a laptop has no answer to the question "what should be running right now?" The live cluster holds one answer, a laptop holds another, and a quick manual fix in production holds a third. GitOps removes the question by naming one source of truth. This part builds the loop that enforces it and creates drift to watch the loop correct it.
 
-A pull-based controller retrieves desired configuration and applies supported corrections. This differs from an administrator manually pushing each change from a workstation. The controller still needs permission to read its source and manage the intended resources, and those permissions should be scoped.
-
-Drift is a difference between desired and live state. A manual change to the replica count can create drift. A configured controller may restore the repository value, report the difference or wait for an approved synchronization action. The exact correction behavior depends on the controller and its policy.
+Four ideas define GitOps. The desired state is declarative: manifests say what must exist, not which steps to run. It is versioned: every change is a commit with an author and a history, so a rollback is another commit. It is pulled: an agent in the cluster reads the repository and applies it, instead of an outside pipeline pushing in with cluster credentials. It is continuously reconciled: the agent compares live state with desired state again and again and corrects the difference.
 
 ```mermaid
 flowchart TB
-    G["Versioned desired state"] -->|"pull"| C["GitOps controller"]
-    L["Live resources"] -->|"observe"| C
-    C -->|"reconcile"| L
-    R["Review process"] -->|"approved change"| G
+    G["Repository"] -->|"read"| C["Controller"]
+    C -->|"compare"| L["Live state"]
+    C -->|"apply difference"| L
+    L -->|"drift"| C
 ```
-The controller closes differences between declared and observed resources through its configured reconciliation policy.
 
-Storing files in Git alone does not implement GitOps. The operating workflow needs automated retrieval and reconciliation. Repository access also does not prove that the source is safe: reviews, protected identities and suitable secret handling remain necessary.
+The diagram shows the loop: the controller reads the repository, compares it with the live state and applies the difference. When someone changes the live state by hand, the next comparison finds the drift.
 
-A reverted configuration can restore an earlier desired state, but it cannot necessarily undo a destructive migration or external transaction. Reconciliation manages declared resources, not every historical effect of an application. Recovery must account for the state beyond the configuration repository.
+## Declare the desired state
 
-## A Drift Timeline
+The playground has no Git server, so you store the desired state in a ConfigMap. Create the namespace and save the manifest as `relay.yaml`. The Deployment carries the label `app.kubernetes.io/part-of: relay`, which the pruning step below needs:
 
-The desired replica count in the repository is three. An operator changes the live Deployment to five during an incident. The GitOps controller next reads its source and compares live state with the declared configuration. Under an automatic correction policy, it restores three. Under a reporting or approval policy, it can expose the difference without immediately correcting it.
+<!-- astrona:playground:renew -->
 
-The correct behavior depends on the operating contract. An emergency manual change should either be recorded in the authoritative source or handled through an explicit temporary procedure that prevents unexpected correction. Treating the live change as permanent while leaving the source unchanged creates conflicting instructions.
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: relay
+  namespace: outpost
+  labels:
+    app: relay
+    app.kubernetes.io/part-of: relay
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: relay
+  template:
+    metadata:
+      labels:
+        app: relay
+    spec:
+      containers:
+        - name: relay
+          image: ghcr.io/stefanprodan/podinfo:6.15.0
+          env:
+            - name: PODINFO_UI_MESSAGE
+              value: relay-v1
+          ports:
+            - name: http
+              containerPort: 9898
+```
 
-The controller can also fail to retrieve or apply intent. Repository credentials can expire, the source can render invalid resources, or cluster permissions can reject a change. A repository commit does not prove reconciliation happened. Status and observed resources provide evidence of whether the controller reached the expected revision.
+Create the stand-in repository from that file:
 
-## GitOps And Sensitive Data
+```sh
+kubectl create namespace gitops-repo
+kubectl -n gitops-repo create configmap desired-state --from-file=relay.yaml
+```
 
-A configuration repository is not automatically an appropriate place for plaintext secrets. Access to historical revisions can reveal values even after the current file removes them. Encryption or external secret delivery can support a controlled workflow, but key ownership, decryption permissions and consumer behavior remain part of the design.
+Now write the reconciliation step as a shell function. It reads the manifest from the ConfigMap, shows the difference between the manifest and the live cluster with `kubectl diff`, and then applies the manifest. `kubectl diff` exits with code `1` when a difference exists, which is not an error here:
 
-Versioned history helps explain who proposed a change and when, subject to the repository's review and identity controls. It does not prove the proposed configuration was authorized by every policy or that the application result is correct. A compromised source identity can publish harmful desired state for a perfectly functioning reconciler to apply.
+```sh
+reconcile() {
+  kubectl -n gitops-repo get configmap desired-state -o jsonpath='{.data.relay\.yaml}' > relay-desired.yaml
+  kubectl diff -f relay-desired.yaml
+  kubectl apply -f relay-desired.yaml
+}
+```
 
-GitOps therefore needs trusted inputs, scoped controller permissions and runtime evidence. Its strength is a clear and repeatable intent-to-state loop, not an automatic guarantee that all declared intent is safe. Reverting a commit changes desired configuration while separate recovery may still be needed for data already modified.
+Run `reconcile` once. The first `diff` lists the whole Deployment as new, and `apply` creates it. Run it a second time: `diff` prints nothing, because live state already equals desired state. A reconciliation loop that finds no difference does nothing.
+
+## Create drift and correct it
+
+Drift is any difference between live state and desired state that did not come from a repository change. Simulate a hotfix made by hand: scale the Deployment and change the message.
+
+```sh
+kubectl -n outpost scale deployment relay --replicas=5
+kubectl -n outpost set env deployment/relay PODINFO_UI_MESSAGE=hotfix
+reconcile
+```
+
+The `diff` now shows the replica count and the environment value moving back to `2` and `relay-v1`, and `apply` writes them. Here `kubectl diff` found the drift and `kubectl apply` corrected it. A real controller runs this loop on a timer and also reacts to cluster events, so nobody has to type `reconcile`. Pull-based means the controller inside the cluster reaches out to the repository; the repository and the CI system never need credentials for the cluster API.
+
+You can see which manager owns each field. Kubernetes records field ownership in `managedFields`:
+
+```sh
+kubectl -n outpost get deployment relay --show-managed-fields -o yaml
+```
+
+The output lists each manager, such as `kubectl-client-side-apply` or `kubectl`, with the fields it set. Server-side apply (`kubectl apply --server-side`) makes this ownership explicit: if two managers claim the same field with different values, the API server reports a conflict instead of silently overwriting.
+
+## Remove what the repository does not list
+
+Reconciliation also covers deletion. An object that someone created by hand and that the repository does not list is drift too. `kubectl apply --prune` deletes live objects that carry a selected label and are missing from the applied manifests. Create an extra object with the label, then reconcile with pruning:
+
+```sh
+kubectl -n outpost create deployment relay-extra --image=ghcr.io/stefanprodan/podinfo:6.15.0
+kubectl -n outpost label deployment relay-extra app.kubernetes.io/part-of=relay
+kubectl apply --prune -l app.kubernetes.io/part-of=relay -f relay-desired.yaml
+```
+
+The `relay-extra` Deployment is deleted, because it has the label and is not in the file. Without the label selector, prune would not know which objects belong to this application. GitOps controllers record the objects they own and prune the ones that leave the repository.
+
+## What a controller cannot infer
+
+A controller knows the repository and the cluster. It cannot know anything outside them. It cannot tell whether a manual change was a mistake or an urgent fix that the team forgot to commit; it reverts both. It cannot restore data in a database or a volume. It cannot read a Secret that was kept out of the repository on purpose, so the Secret must come from a secret manager or an encrypted file. It does not know whether the new version is healthy for users: reconciliation confirms that the objects match, not that the application works.
 
 ## Common pitfalls
 
 > [!WARNING]
-> Git storage alone is not a reconciliation system. Manual live changes can be corrected by a controller, and reverting configuration does not automatically undo data changes.
+> Drift correction reverts every manual change, including a useful hotfix that was never committed. Pruning without a label selector is refused, and a wrong selector deletes objects. A repository that contains a plain-text Secret exposes it to everyone who can read the repository. A synced application is not the same as a healthy application.

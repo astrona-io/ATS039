@@ -5,35 +5,173 @@ exam_objectives:
 ---
 # Helm, Kustomize And Configuration Rendering
 
-The `scout` application needs similar Kubernetes resources in development and production, with different replica counts. Configuration tools reduce repeated manual editing, but they use different methods. The rendered resources are still subject to API validation and normal controller behavior.
+The repository of a GitOps setup holds manifests, and one application usually needs several variants of them: a different replica count in production, a different image tag in staging, a different hostname per customer. Copying and editing the YAML for each variant makes the copies drift apart. Helm and Kustomize solve this in different ways. This part renders the same application with each tool, so the difference is visible in the output.
 
-Helm packages related resources in a chart. Templates and values produce Kubernetes manifests, and Helm tracks releases for installation and updates. A chart can express many configuration choices, but template complexity can hide the actual resource changes if reviewers only inspect a values file.
+Helm is a package manager for Kubernetes. A chart is a directory of templates and a `values.yaml` file with default values. Helm fills the templates with values and sends the result to the cluster as a release. Kustomize needs no templates. It takes plain, valid manifests as a base and layers patches on top in an overlay. `kubectl` includes Kustomize.
 
-Kustomize starts from resource files and composes or patches them through bases and overlays. An overlay can adjust an image or replica count for one environment without rewriting the base. It does not use the same general templating model as Helm, though both can appear in a delivery workflow.
+```mermaid
+flowchart TB
+    B["Base manifests"] --> K["kustomize build"]
+    O["Overlay patches"] --> K
+    T["Chart templates"] --> H["helm template"]
+    V["values.yaml"] --> H
+    K --> M["Rendered manifests"]
+    H --> M
+```
 
-Rendering is the transformation from tool inputs to the final resource declarations. Review those outputs to confirm names, namespaces, image identities, labels and permissions. A correct-looking source value can still render a selector mismatch or an unintended privilege.
+The diagram shows two ways to reach the same result: Kustomize combines a base with an overlay, and Helm combines templates with values.
 
-Neither tool automatically supplies continuous reconciliation. A GitOps controller may render Helm or Kustomize inputs and then reconcile the result, but the packaging or customization tool alone is a different part of the workflow. Likewise, neither output guarantees application readiness.
+## Kustomize: a base and an overlay
 
-Choose Helm when a parameterized package and release workflow suit the use case. Choose Kustomize when resource composition and environment overlays fit better. Decide from maintainability and review needs rather than assuming every deployment requires both. Whatever the tool, the final manifest should express the intended state clearly enough to inspect.
+A base is a valid set of manifests with a `kustomization.yaml` that lists them. An overlay is a second directory whose `kustomization.yaml` points at the base and changes selected fields. Create the directories and save the base:
 
-## Reviewing Rendered Resources
+<!-- astrona:playground:renew -->
 
-Suppose a Helm value changes the application image and replica count. A chart template uses those values to produce a Deployment. The rendered result can also contain labels, selectors, mounts and permissions defined elsewhere in the chart. Reviewing only the two changed values can miss an unintended interaction in the generated resources.
+```sh
+mkdir -p base overlays/production
+```
 
-With Kustomize, a production overlay can change replicas and image identity over a shared base. Patches need to target the intended object and field. A base change can affect every overlay, while an overlay patch can become incompatible with a changed base structure. Composition reduces duplication but does not remove review of the final configuration.
+Save this as `base/deployment.yaml`:
 
-Names and namespaces must remain consistent across references. A customized Secret name, Service selector or claim reference needs a corresponding consumer relationship. A generated set can be individually valid while containing references that do not resolve to the intended objects. Rendering validation and runtime behavior answer different questions.
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: beacon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: beacon
+  template:
+    metadata:
+      labels:
+        app: beacon
+    spec:
+      containers:
+        - name: beacon
+          image: ghcr.io/stefanprodan/podinfo
+          ports:
+            - name: http
+              containerPort: 9898
+```
 
-## Choosing A Configuration Abstraction
+Save this as `base/kustomization.yaml`:
 
-A chart is useful for packaging a reusable application with defined parameter choices and release tracking. An overlay is useful for modifying concrete resource files across environments. Either can become difficult to maintain if it accumulates too many conditionals, patches or unexplained environment exceptions.
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - deployment.yaml
+```
 
-Prefer an abstraction whose inputs and outputs reviewers can understand. A small repeated setting may be clearer as an explicit overlay than a large general template. A reusable application with several related resources may benefit from a chart's packaging contract. The tools can be combined when needed, but that adds another transformation to inspect.
+Save this as `overlays/production/kustomization.yaml`. It uses the base, sets the namespace, sets the replica count, sets the image tag and adds a label to the object and to its pod template:
 
-The delivery controller, if present, consumes these outputs and reconciles them. Helm rendering, Kustomize composition, API acceptance and application readiness remain distinct stages. A useful configuration lesson follows a specific input through its rendered field and resulting behavior rather than assuming the chosen tool makes correctness automatic.
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: outpost
+resources:
+  - ../../base
+replicas:
+  - name: beacon
+    count: 2
+images:
+  - name: ghcr.io/stefanprodan/podinfo
+    newTag: 6.15.0
+labels:
+  - pairs:
+      env: production
+    includeTemplates: true
+```
+
+Render the overlay first. `kubectl kustomize` prints the manifests and changes nothing in the cluster:
+
+```sh
+kubectl kustomize overlays/production
+```
+
+Read the output: the Deployment is in `outpost`, has `replicas: 2`, uses the image `ghcr.io/stefanprodan/podinfo:6.15.0` and carries the label `env: production`. The base files are unchanged. Apply the overlay with `-k`, which means "build this directory and apply the result":
+
+```sh
+kubectl apply -k overlays/production
+kubectl -n outpost rollout status deployment/beacon
+```
+
+A new environment is a new overlay directory. The base stays the single place for what all environments share.
+
+## Helm: templates and values
+
+A chart separates the templates from the values. Create the chart directory and save three files:
+
+```sh
+mkdir -p chart/templates
+```
+
+Save this as `chart/Chart.yaml`:
+
+```yaml
+apiVersion: v2
+name: lantern
+description: A small web application
+version: 0.1.0
+appVersion: "6.15.0"
+```
+
+Save this as `chart/values.yaml`:
+
+```yaml
+replicas: 1
+image:
+  repository: ghcr.io/stefanprodan/podinfo
+  tag: 6.15.0
+message: lantern-default
+```
+
+Save this as `chart/templates/deployment.yaml`. The double braces mark where Helm inserts a value:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: app
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          env:
+            - name: PODINFO_UI_MESSAGE
+              value: {{ .Values.message | quote }}
+          ports:
+            - name: http
+              containerPort: 9898
+```
+
+Render it with an override, then install it. `--set` replaces one value, and `-n outpost` selects the namespace:
+
+```sh
+helm template lantern ./chart --set replicas=2
+helm install lantern ./chart -n outpost --set replicas=2
+helm upgrade lantern ./chart -n outpost --set replicas=3 --set message=lantern-v2
+helm get values lantern -n outpost
+```
+
+`helm template` only renders. `helm install` creates a release, and `helm upgrade` creates a new revision of it. Helm stores each revision as a Secret in the release namespace. List them with `kubectl -n outpost get secrets -l owner=helm`. This stored history is how `helm rollback` returns to an earlier revision.
+
+## Choose by what changes
+
+Templating inserts values into a template and can express logic, loops and conditions, so it suits an application that others install with their own settings. The cost is that the template is not valid YAML until it is rendered, and a wrong value shows up only at render time. Overlays keep every file valid and show exactly which fields differ per environment, but they cannot loop or compute. Teams also combine them: render a chart with `helm template` and then patch the result with Kustomize. In either case, a GitOps controller applies the rendered manifests, so the repository can hold the chart and the values, or the base and the overlays.
 
 ## Common pitfalls
 
 > [!WARNING]
-> Helm and Kustomize produce configuration; neither inherently provides continuous GitOps reconciliation. Review rendered resources, not just the inputs used to generate them.
+> `helm install` and `kubectl apply` on the same objects create two owners for one object. A `--set` flag typed in a terminal is not recorded in the repository; put values in a file under version control. A Kustomize overlay with a namespace field changes only objects it lists. Rendering success does not prove the manifests are valid for the cluster.

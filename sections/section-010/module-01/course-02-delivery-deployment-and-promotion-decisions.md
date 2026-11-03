@@ -5,35 +5,135 @@ exam_objectives:
 ---
 # Delivery, Deployment And Promotion Decisions
 
-The `scout` pipeline produces a release-ready artifact after checks. Continuous delivery keeps software in a state that can be released through a controlled decision. Continuous deployment automatically deploys qualifying changes without a separate manual release approval. Both can use the same build and test foundation.
+A verified image exists. The next decision is who or what puts it into production, and how the team keeps the tested image identical across environments. Two terms describe the decision. Continuous delivery means every change that passes the pipeline is kept in a releasable state, and a person or a policy approves the final deployment. Continuous deployment means the pipeline deploys every passing change to production automatically, with no manual approval.
 
-The abbreviation CD is used for both practices, so the decision gate matters more than the abbreviation. A pipeline that waits for a human to approve production promotion can still support continuous delivery. A pipeline that promotes every passing change automatically implements continuous deployment if its other requirements are met.
+Both practices share the same checks. They differ only in the last gate. A team picks continuous delivery when a release needs a business decision, a change window or an audit approval. A team picks continuous deployment when automated checks and fast rollback give enough confidence to release on every merge.
 
-Deployment changes what runs in an environment. Release can also mean making behavior available to users. A feature flag can let deployed code remain inactive until an explicit decision enables it. This separation can reduce some release risks, but old and new behavior must still be tested and compatible.
+```mermaid
+flowchart TB
+    V["Verified image"] -->|"auto promote"| S["staging"]
+    S -->|"checks pass"| G{"Approval gate"}
+    G -->|"approved"| P["production"]
+    G -->|"no approval"| W["Waits"]
+```
 
-Promotion needs permissions and environment-specific controls. A build service that compiles source does not necessarily need permission to modify production workloads. Separate identities and scoped credentials limit the consequences of compromised build inputs or tools.
+The diagram shows continuous delivery: the image reaches staging on its own and waits at the gate before production. Continuous deployment removes the gate.
 
-A good release record identifies the artifact, configuration change, approvals where applicable and observed result. It should support both investigation and reversal. Rolling back an image alone may not reverse a changed database schema or an external side effect.
+## Promote the same image, change only the configuration
 
-For a scenario, find where the decision occurs. Automatic tests followed by a manual production approval indicate continuous delivery. Automatic production deployment of every qualifying change indicates continuous deployment. Neither label guarantees that the resulting application is healthy without representative validation and monitoring.
+Promotion means moving one artifact from an environment to the next. The staging result only says something about production when production receives the same bytes. So the pipeline copies the image reference and leaves the environment-specific values, such as a message, a database address or a replica count, in separate configuration.
 
-## Locating The Release Decision
+<!-- astrona:playground:renew -->
 
-Consider a pipeline with automatic compilation, testing and staging deployment, followed by a manual production approval. It keeps the change ready for release and supports continuous delivery. Removing the final approval and automatically promoting every qualifying change changes the production decision to continuous deployment. Automated testing by itself does not distinguish them.
+First read the staging release. The `scout` image reference is the value to promote:
 
-A team can also deploy dormant functionality controlled by a feature flag. The application bytes reach production before the feature becomes available to users. The flag needs ownership, monitoring and cleanup so old inactive branches do not become permanent hidden complexity. Switching a flag can also have compatibility and security consequences even without rebuilding an image.
+```sh
+kubectl -n starfleet get deployment scout -o jsonpath='{.spec.template.spec.containers[0].image}{"\n"}'
+```
 
-Release gates should match the risk. A manual approval is useful only when the approver has meaningful evidence and authority. An automated gate is useful only when its checks reflect the required behavior. Neither a person clicking a button nor a green icon alone establishes that the release is safe.
+Save this as `scout-production-config.yaml`. A ConfigMap is a Kubernetes object that stores configuration as key and value pairs outside the image. The `podinfo` application reads the variable `PODINFO_UI_MESSAGE` for the text it returns:
 
-## Separating Pipeline Identities
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scout-config
+  namespace: outpost
+data:
+  PODINFO_UI_MESSAGE: scout-production
+```
 
-The build stage may need source access and permission to publish to one artifact repository. The production delivery stage may need to update a scoped workload set. Granting the build process unrestricted cluster access combines these trust boundaries unnecessarily. A compromised dependency or build step can then affect the deployment environment directly.
+Apply it:
 
-Keep secrets out of ordinary logs and limit credentials to the stages that use them. A short-lived deployment identity reduces exposure compared with a widely shared permanent credential, while repository protections control who can change pipeline instructions. These controls preserve the integrity of the release decision.
+```sh
+kubectl apply -f scout-production-config.yaml
+```
 
-Finally, record a recovery plan for more than the image. Configuration, data migrations, feature flags and external side effects can survive image rollback. Delivery and deployment practices work well when the team can explain both how a qualifying change reaches users and how an unsuitable change is detected and corrected.
+Now save the production Deployment as `deployment-scout-production.yaml`. It uses the image reference you read from staging and takes its configuration from the ConfigMap through `envFrom`:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scout
+  namespace: outpost
+  annotations:
+    release.astrona.io/source-revision: 4f2a9c1
+    release.astrona.io/build-id: build-1287
+    kubernetes.io/change-cause: promoted build-1287 from staging
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: scout
+  template:
+    metadata:
+      labels:
+        app: scout
+    spec:
+      containers:
+        - name: scout
+          image: ghcr.io/stefanprodan/podinfo:6.15.0
+          envFrom:
+            - configMapRef:
+                name: scout-config
+          ports:
+            - name: http
+              containerPort: 9898
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+```
+
+Apply it and wait for the rollout:
+
+```sh
+kubectl apply -f deployment-scout-production.yaml
+kubectl -n outpost rollout status deployment/scout --timeout=120s
+```
+
+Then compare the two environments. The image reference is equal and the message differs:
+
+```sh
+kubectl -n starfleet get deployment scout -o jsonpath='{.spec.template.spec.containers[0].image}{"\n"}'
+kubectl -n outpost get deployment scout -o jsonpath='{.spec.template.spec.containers[0].image}{"\n"}'
+kubectl -n outpost get configmap scout-config -o jsonpath='{.data}{"\n"}'
+```
+
+If production later misbehaves, the investigation starts from a short list: image identity, effective configuration and dependencies. Nobody has to ask whether an undocumented rebuild changed the bytes.
+
+## An approval gate in a promotion step
+
+A pipeline stage that promotes only after approval has one extra job: it reads a decision recorded somewhere and exits non-zero when the decision is missing. In a real pipeline the approval is a button or a review. Here the decision is an annotation on the staging Deployment, and a shell function plays the promotion step. Paste it into your terminal:
+
+```sh
+promote_if_approved() {
+  approved="$(kubectl -n starfleet get deployment scout -o jsonpath='{.metadata.annotations.release\.astrona\.io/approved}')"
+  if [ "$approved" != "true" ]; then
+    echo "not approved: production unchanged"
+    return 1
+  fi
+  echo "approved: promoting"
+}
+```
+
+Run `promote_if_approved`. It prints `not approved: production unchanged` and returns `1`, so a pipeline would stop. Record the approval and run it again:
+
+```sh
+kubectl -n starfleet annotate deployment scout release.astrona.io/approved=true
+promote_if_approved
+```
+
+Continuous delivery has this gate. Continuous deployment would call the promotion step without reading any approval. Neither choice changes the image: the promoted artifact is the one that passed the checks.
+
+## Deployment is not the same as exposure
+
+Deploying a release puts the new pods in the cluster. Exposing a feature decides whether users see it. A team can deploy code with a feature switched off by a configuration value, and switch it on later by changing only the ConfigMap. This separates the risk of the new code from the risk of the new behavior. Changing the ConfigMap does not restart pods that already read it as environment variables, so a rollout restart is still needed to apply it.
+
+Release control also needs scoped credentials. The identity a pipeline uses to deploy should hold only the rights it needs in the target namespace, and a recovery plan must cover configuration and data changes, because an image rollback restores only the image.
 
 ## Common pitfalls
 
 > [!WARNING]
-> Deployment and user-visible release can happen at different times. An image rollback does not automatically reverse database migrations or external effects.
+> Continuous delivery and continuous deployment are not the same. The first keeps a manual or policy gate before production; the second has none. Promoting by rebuilding for each environment breaks the link between test evidence and deployed bytes. Environment values belong in configuration, not in a different image.

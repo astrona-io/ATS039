@@ -1,5 +1,5 @@
 version: 1
-approval: KCNA-LESSON-PLAN.md approved; reading-only correction 2026-10-10
+approval: KCNA-LESSON-PLAN.md approved; hands-on scope (playgrounds, labs, capstones, quiz.yaml) approved by the maintainer
 course:
   id: ATS039
   certification:
@@ -12,9 +12,9 @@ course:
     - Application Delivery
     - Debugging
 defaults:
-  playground: false
-  module_lab: false
-  capstone: false
+  playground: true
+  module_lab: true
+  capstone: true
   section_quiz: true
   final_quiz: true
 sections:
@@ -32,8 +32,8 @@ sections:
     outline:
     - Source Changes And Build Evidence
     - Delivery, Deployment And Promotion Decisions
-    playground: false
-    module_lab: false
+    playground: true
+    module_lab: true
     diagrams: []
   - id: module-02
     title: GitOps And Deployment Configuration
@@ -45,8 +45,8 @@ sections:
     outline:
     - GitOps Reconciliation And Drift
     - Helm, Kustomize And Configuration Rendering
-    playground: false
-    module_lab: false
+    playground: true
+    module_lab: true
     diagrams: []
   - id: module-03
     title: Safe Application Releases
@@ -58,8 +58,8 @@ sections:
     outline:
     - Rolling Updates And Health Gates
     - Blue-Green, Canary And Release Evidence
-    playground: false
-    module_lab: false
+    playground: true
+    module_lab: true
     diagrams: []
   capstone: false
   section_quiz: true
@@ -77,8 +77,8 @@ sections:
     outline:
     - Logs, Exits And Crash Loops
     - Configuration, Dependencies And Request Failures
-    playground: false
-    module_lab: false
+    playground: true
+    module_lab: true
     diagrams: []
   - id: module-02
     title: Debugging Failed Releases
@@ -90,8 +90,8 @@ sections:
     outline:
     - Intended Versions And Observed Progress
     - Reproduce, Correct And Verify
-    playground: false
-    module_lab: false
+    playground: true
+    module_lab: true
     diagrams: []
   capstone: false
   section_quiz: true

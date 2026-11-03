@@ -17,6 +17,6 @@ Verified against the [official objectives](https://training.linuxfoundation.org/
 | 020 / 01 | Diagnosing Application Failures | 2 | Distinguish process failure from application response failure.; Use logs and termination evidence to form a diagnosis.; Relate configuration and dependency access to application behavior.; Explain correlation and safe reproduction of a failing request. |
 | 020 / 02 | Debugging Failed Releases | 2 | Compare intended release identity with observed replicas and artifacts.; Relate failed probes to rollout progress.; Design a focused reproduce, correct and verify cycle.; Choose rollback only when its compatibility requirements hold. |
 
-Every section begins with an introduction. Every module ends with a summary before the next module. YAML question banks follow the final module summary of each section; a domain review bank closes the course. They are indexed separately for future application integration.
+Every section begins with an introduction. Every module ends with a summary before the next module. Each module has a playground and a graded lab after its last part. Each section closes with a capstone and a `quiz.yaml` knowledge check; `sections/final-domain-quiz.yaml` closes the course.
 
-This course has no labs or playgrounds, as requested by the maintainer. All material is readable without a cluster. Technical content remains draft until review; no runtime execution or lab validation is claimed.
+Labs and playgrounds are written and statically validated only; no runtime execution is claimed. Technical content remains draft until review.

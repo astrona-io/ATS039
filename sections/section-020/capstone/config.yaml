@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Debug A Broken Delivery In Starfleet (CAPSTONE). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-039-capstone-020
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+
+# Starting state: starfleet plus dispatch (stuck release), beacon (crash loop) and relay (no endpoints).
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create starfleet, the three faulty workloads and the UID record
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: dispatch-released
+      description: dispatch version two is fully rolled out
+      type: file
+      source: validation/validate-dispatch-released.sh
+      hint: Compare updated, ready and available with desired, then read the Progressing condition and the pod events. Fix the template; do not use rollout undo.
+    - name: beacon-running
+      description: beacon runs with a corrected ConfigMap value
+      type: file
+      source: validation/validate-beacon-running.sh
+      hint: Read kubectl logs --previous for the beacon pod. Correct the value in the ConfigMap, then make the container start again.
+    - name: relay-endpoints
+      description: The Service relay has endpoints
+      type: file
+      source: validation/validate-relay-endpoints.sh
+      hint: Compare the selector of the Service relay with the labels of the relay pods.
+    - name: clients-served
+      description: shuttle gets answers from relay and dispatch
+      type: file
+      source: validation/validate-clients-served.sh
+      hint: Request /healthz on relay and the root path on dispatch from the shuttle pod.
+    - name: uids-unchanged
+      description: The Deployments were repaired in place
+      type: file
+      source: validation/validate-uids-unchanged.sh
+      hint: Do not delete dispatch, beacon or relay. Patch them.
+    - name: evidence-recorded
+      description: The dispatch fix is recorded on the Deployment
+      type: file
+      source: validation/validate-evidence.sh
+      hint: Annotate the Deployment dispatch with kubernetes.io/change-cause and mention readyz.
+
+teardown:
+  keepCluster: false

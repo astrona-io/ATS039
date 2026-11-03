@@ -6,4 +6,4 @@ At the end, you can explain and compare the concepts in Application Delivery, De
 
 Each section begins with an introduction and learning outcomes. Each module starts with a short map, continues with teaching lessons and ends with a summary. Read the examples carefully, identify which component does the work, and predict what changes when a condition changes.
 
-Original practice questions are prepared as reusable YAML banks at section checkpoints and at the end of the domain. They can be presented by a future quiz interface with answer feedback. The current reading manifest contains the teaching pages; the question data is kept separately for integration. These exercises are not copied from the examination.
+Each module has a playground for free practice and a graded lab, each section ends with a capstone lab, and original knowledge checks close each section and the domain. The knowledge checks give answer feedback. These exercises are not copied from the examination.

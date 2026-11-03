@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Release Scout Through A Delivery Pipeline (CAPSTONE). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-039-capstone-010
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+
+# Starting state: starfleet plus a stand-in repository (ConfigMap delivery-repo) with a Kustomize base.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create starfleet, the stand-in repository and its fingerprint
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: overlay-applied
+      description: scout in outpost is built from a Kustomize overlay
+      type: file
+      source: validation/validate-overlay-applied.sh
+      hint: Extract both base files from the ConfigMap delivery-repo, write a kustomization.yaml and run kubectl apply -k. Set namespace, replicas, the image tag and the label with includeTemplates.
+    - name: canary-running
+      description: scout-canary runs one replica behind the same Service
+      type: file
+      source: validation/validate-canary-running.sh
+      hint: The canary pods need the label app=scout so the Service selects them, and the label track=canary so they differ from the stable pods.
+    - name: traffic-split
+      description: The Service scout spreads traffic 3:1
+      type: file
+      source: validation/validate-traffic-split.sh
+      hint: Read kubectl get endpoints scout in outpost. Three stable pods and one canary pod give four addresses.
+    - name: release-check
+      description: The release-check Job completed with HTTP 200
+      type: file
+      source: validation/validate-release-check.sh
+      hint: Run a Job with curlimages/curl:8.22.0 that requests http://scout.outpost.svc.cluster.local/healthz, prints the status code and exits non-zero unless it is 200.
+    - name: evidence-recorded
+      description: The release is recorded on the Deployment
+      type: file
+      source: validation/validate-evidence.sh
+      hint: Annotate the Deployment scout in outpost with kubernetes.io/change-cause and mention canary.
+    - name: repo-unchanged
+      description: The repository ConfigMap is unchanged
+      type: file
+      source: validation/validate-repo-unchanged.sh
+      hint: Do not edit delivery-repo. Put every change in the overlay.
+
+teardown:
+  keepCluster: false

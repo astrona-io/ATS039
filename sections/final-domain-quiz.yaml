@@ -1,3 +1,4 @@
+# Final domain knowledge check across both sections. Listed last in astrona.yaml as a `type: quiz` entry.
 schema_version: 1
 kind: question_bank
 id: ats039-domain-review
@@ -9,9 +10,6 @@ scope:
   type: domain
   id: domain-review
   title: Cloud Native Application Delivery
-placement:
-  position: after
-  reading: sections/section-020/module-02/course-03-summary.md
 questions:
 - id: ats039-domain-review-q01
   type: single_choice

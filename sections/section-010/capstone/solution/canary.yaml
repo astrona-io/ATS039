@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scout-canary
+  namespace: outpost
+  labels:
+    app: scout
+    track: canary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scout
+      track: canary
+  template:
+    metadata:
+      labels:
+        app: scout
+        track: canary
+    spec:
+      containers:
+        - name: scout
+          image: ghcr.io/stefanprodan/podinfo:6.15.0
+          env:
+            - name: PODINFO_UI_MESSAGE
+              value: scout-canary
+          ports:
+            - name: http
+              containerPort: 9898
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http

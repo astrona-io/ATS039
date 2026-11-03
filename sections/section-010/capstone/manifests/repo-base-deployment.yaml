@@ -1,0 +1,30 @@
+# Base for the production overlay. Stored in the ConfigMap delivery-repo.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scout
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scout
+      track: stable
+  template:
+    metadata:
+      labels:
+        app: scout
+        track: stable
+    spec:
+      containers:
+        - name: scout
+          image: ghcr.io/stefanprodan/podinfo
+          env:
+            - name: PODINFO_UI_MESSAGE
+              value: scout-stable
+          ports:
+            - name: http
+              containerPort: 9898
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http

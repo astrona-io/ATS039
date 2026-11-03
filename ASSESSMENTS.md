@@ -1,19 +1,17 @@
-# Reusable Question Banks
+# Knowledge Checks
 
 `assessments/index.yaml` lists banks in teaching order. Each bank uses schema
 version 1 and the contract in `schemas/question-bank.schema.json`. This is an
 authoring format for future application integration, not an existing Astrona
 quiz API. No YAML question file is registered as a Markdown reading.
 
-Each section bank follows that section's final module summary. The domain bank
-follows the final section bank. Banks contain 5–15 original single-choice
+Each section quiz (`sections/section-0X0/quiz.yaml`) follows that section's capstone. The final quiz (`sections/final-domain-quiz.yaml`) closes the course. `astrona.yaml` registers each as a `type: quiz` entry with `pass_score: 70`. Banks contain 5–15 original single-choice
 questions, scoped to concepts taught in the course. They remain draft for review.
 
 ## Fields And Rendering
 
 - `id`: stable bank or question identity; preserve it when editing wording.
 - `scope`: section or domain checkpoint.
-- `placement`: relative reading path after which the checkpoint belongs.
 - `learning_objective`: the measurable outcome checked by the question.
 - `source_readings`: author traceability to the teaching; not learner navigation.
 - `prompt`: learner-visible question text.

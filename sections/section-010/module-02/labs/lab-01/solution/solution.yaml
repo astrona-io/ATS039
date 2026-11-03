@@ -1,0 +1,16 @@
+# Kustomize overlay for outpost, written to files by apply.sh.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: outpost
+resources:
+  - ../../base
+replicas:
+  - name: scout
+    count: 2
+images:
+  - name: ghcr.io/stefanprodan/podinfo
+    newTag: 6.15.0
+labels:
+  - pairs:
+      env: production
+    includeTemplates: true

@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: outpost
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gitops-repo
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lab-meta
+---
+# A second client so the lab can send requests.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shuttle
+  namespace: starfleet
+  labels:
+    app: shuttle
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shuttle
+  template:
+    metadata:
+      labels:
+        app: shuttle
+    spec:
+      containers:
+        - name: shuttle
+          image: curlimages/curl:8.22.0
+          command: ["sh", "-c", "while true; do sleep 30; done"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 32Mi
+---
+# An object nobody committed: it is not in the repository.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debug-tools
+  namespace: starfleet
+  labels:
+    app: debug-tools
+    app.kubernetes.io/part-of: scout
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: debug-tools
+  template:
+    metadata:
+      labels:
+        app: debug-tools
+    spec:
+      containers:
+        - name: debug-tools
+          image: curlimages/curl:8.22.0
+          command: ["sh", "-c", "while true; do sleep 30; done"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 32Mi

@@ -5,42 +5,225 @@ exam_objectives:
 ---
 # Blue-Green, Canary And Release Evidence
 
-A team wants tighter control over when users reach version two. Blue-green deployment keeps separate old and new application environments and switches traffic after validating the new one. It can make traffic reversal straightforward, but it requires extra capacity and attention to shared dependencies and state compatibility.
+A rolling update replaces pods in one Deployment. Sometimes a team wants more control: switch all traffic at one moment, or expose a new version to a small share of requests first. Blue-green and canary releases do this by running two versions at once and steering traffic between them. This part builds both with Deployments and a Service, then lists the evidence that justifies promoting a release or reversing it.
 
-A canary release sends a limited amount of traffic or a selected user group to the new version. The team observes results before expanding exposure. This approach can reduce initial impact, but the canary must receive representative work and enough observations to support a decision.
+In a blue-green release, two complete environments exist: blue runs the current version and green runs the new one. A router sends all traffic to one of them. After green is verified, the router switches all traffic to green in one step, and blue stays running for a quick return. In a canary release, the new version receives a small share of traffic, and the team widens the share while the evidence stays good.
 
 ```mermaid
 flowchart TB
-    C["Client traffic"] -->|"main share"| O["Current version"]
-    C -->|"limited share"| N["Canary version"]
-    N -->|"errors and latency"| E["Release evaluation"]
-    E -->|"promote or stop"| D["Traffic decision"]
+    S["Service: selector"] -->|"version: blue"| B["blue pods"]
+    S -.->|"version: green"| G["green pods"]
 ```
-Canary evaluation connects controlled exposure with measured behavior before a wider traffic change.
 
-Traffic splitting needs a suitable implementation. A plain Service selecting old and new Pods does not automatically provide precise version-weighted routing. A gateway, mesh or other delivery mechanism may supply those controls. Explain the mechanism rather than assuming the name of the strategy creates it.
+The diagram shows a Service whose label selector picks one version. Changing the selector from `blue` to `green` moves all traffic at once.
 
-Useful evidence includes error rate, latency, saturation and application-specific outcomes. Compare equivalent traffic and time windows so a quieter new version does not look healthy merely because it receives almost no meaningful work. Set promotion and stop conditions before exposing users.
+## Blue-green with a Service selector
 
-Choose rolling updates for gradual replacement with shared capacity, blue-green for separately prepared environments with a controlled switch, and canary for staged exposure with evidence. Each still needs compatible data changes, rollback planning and a clear owner for the release decision.
+A Service sends traffic to the pods whose labels match its selector. That makes the selector the switch. Save the two versions as `bluegreen.yaml`. Both Deployments have `app: lander`, and a `version` label separates them. The Service selects `blue`:
 
-## Comparing Exposure And Recovery Costs
+<!-- astrona:playground:renew -->
 
-Blue-green keeps two prepared versions so traffic can switch between them. The spare environment needs capacity and realistic validation. If both versions share one database, switching traffic does not undo data changes. If they use separate data stores, synchronization and cutover consistency become additional responsibilities.
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lander-blue
+  namespace: outpost
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: lander
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: lander
+        version: blue
+    spec:
+      containers:
+        - name: lander
+          image: ghcr.io/stefanprodan/podinfo:6.15.0
+          env:
+            - name: PODINFO_UI_MESSAGE
+              value: lander-blue
+          ports:
+            - name: http
+              containerPort: 9898
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lander-green
+  namespace: outpost
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: lander
+      version: green
+  template:
+    metadata:
+      labels:
+        app: lander
+        version: green
+    spec:
+      containers:
+        - name: lander
+          image: ghcr.io/stefanprodan/podinfo:6.15.0
+          env:
+            - name: PODINFO_UI_MESSAGE
+              value: lander-green
+          ports:
+            - name: http
+              containerPort: 9898
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lander
+  namespace: outpost
+spec:
+  selector:
+    app: lander
+    version: blue
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+```
 
-Canary initially exposes a smaller group or traffic share. Its evaluation must include meaningful work, not only a health endpoint that never exercises the changed code. A one-percent share can be useful under high volume and weak under very low volume. The statistical and operational confidence depends on the observations, not solely on the percentage.
+Apply it and wait for both versions:
 
-A rolling update changes the replica population gradually and can be simpler to operate with ordinary Deployment behavior. It still exposes users to the new version as ready replicas join. Choose a strategy based on impact, capacity, traffic control and the application's compatibility rather than treating one strategy as universally safest.
+```sh
+kubectl apply -f bluegreen.yaml
+kubectl -n outpost rollout status deployment/lander-blue --timeout=120s
+kubectl -n outpost rollout status deployment/lander-green --timeout=120s
+```
 
-## Promotion Conditions And Misleading Metrics
+Verify green before it gets traffic. The Service still selects blue, so users see only blue. Read the answer from the Service, then ask a green pod directly with a port-forward:
 
-Before exposure, define the outcomes that permit expansion and those that require stopping. Error rate, response-time distribution and important transaction success can be useful. Compare equivalent requests and windows; a canary that receives only cached reads may hide a defect in writes.
+```sh
+kubectl -n outpost exec deploy/drifter -- curl -s http://lander.outpost.svc.cluster.local/ | grep message
+kubectl -n outpost port-forward deployment/lander-green 9898:9898
+```
 
-A proxy or mesh can implement weighted routing, but a plain Service does not promise an exact user-level traffic ratio from replica counts. Connection reuse, client behavior and implementation details can distort observed distribution. The routing mechanism must match the release plan.
+In a second terminal, run `curl -s http://127.0.0.1:9898/ | grep message`. The answer holds `lander-green`. Stop the port-forward, then switch the Service to green and test again from `drifter`:
 
-A successful rollback or traffic switch also needs verification. Confirm users reach the intended version and data remains consistent. Release strategies control exposure, while observability and application design establish whether the exposed behavior is acceptable and recoverable.
+```sh
+kubectl -n outpost patch service lander -p '{"spec":{"selector":{"app":"lander","version":"green"}}}'
+kubectl -n outpost exec deploy/drifter -- curl -s http://lander.outpost.svc.cluster.local/ | grep message
+```
+
+The answer now holds `lander-green`. To return, patch the selector back to `blue`; the blue pods still run, so the return takes as long as the Service endpoints need to update. The price of blue-green is double capacity while both versions run.
+
+## Canary with a replica ratio
+
+A canary needs no extra tool in plain Kubernetes. Two Deployments carry the same label that the Service selects, and the share of traffic follows the pod counts, because the Service spreads requests across all ready pods. Three stable pods and one canary pod send about one request in four to the canary. Save this as `canary.yaml`:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lookout-stable
+  namespace: outpost
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: lookout
+      track: stable
+  template:
+    metadata:
+      labels:
+        app: lookout
+        track: stable
+    spec:
+      containers:
+        - name: lookout
+          image: ghcr.io/stefanprodan/podinfo:6.15.0
+          env:
+            - name: PODINFO_UI_MESSAGE
+              value: lookout-stable
+          ports:
+            - name: http
+              containerPort: 9898
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lookout-canary
+  namespace: outpost
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lookout
+      track: canary
+  template:
+    metadata:
+      labels:
+        app: lookout
+        track: canary
+    spec:
+      containers:
+        - name: lookout
+          image: ghcr.io/stefanprodan/podinfo:6.15.0
+          env:
+            - name: PODINFO_UI_MESSAGE
+              value: lookout-canary
+          ports:
+            - name: http
+              containerPort: 9898
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lookout
+  namespace: outpost
+spec:
+  selector:
+    app: lookout
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+```
+
+Apply it, wait for both Deployments, and send twenty requests:
+
+```sh
+kubectl apply -f canary.yaml
+kubectl -n outpost rollout status deployment/lookout-stable --timeout=120s
+kubectl -n outpost rollout status deployment/lookout-canary --timeout=120s
+kubectl -n outpost exec deploy/drifter -- sh -c 'for i in $(seq 1 20); do curl -s http://lookout.outpost.svc.cluster.local/ | grep message; done' | sort | uniq -c
+```
+
+The count shows both messages, with the canary answering a minority of the requests. The split follows the pod counts and is approximate, not exact. Widen the canary with `kubectl -n outpost scale deployment lookout-canary --replicas=2` and `kubectl -n outpost scale deployment lookout-stable --replicas=2`. Finer control, such as exactly one percent, needs a router that splits by weight, which a service mesh or an ingress controller provides.
+
+## Evidence for promoting or reversing
+
+Promote only on evidence that the new version is healthy under real traffic: all new pods are ready, the error rate of the canary is not higher than that of the stable version, latency is similar, and the logs show no new errors. Reverse when the evidence turns bad: pods fail readiness, the error rate rises or a key request fails. Decide the thresholds before the release, so the decision does not depend on opinion during an incident.
+
+A rollback has limits. `kubectl rollout undo` and a switch back to blue restore the pod template and the traffic path. They do not restore a ConfigMap that changed, rows that the new version wrote to a database, or a schema migration that already ran. A rollback is safe only when the old version works with the current data, so a schema change should first be made backward compatible.
 
 ## Common pitfalls
 
 > [!WARNING]
-> A Service selecting two versions is not automatically a precise weighted canary. Low traffic or unrepresentative requests can make weak release evidence look reassuring.
+> A canary ratio from pod counts is approximate and changes when a pod restarts. A Service selector that matches a label shared by both versions sends traffic to both. A blue-green switch is not a rollback of data. Judging a canary on too few requests gives no reliable error rate.

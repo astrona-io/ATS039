@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: outpost
+resources:
+  - base-deployment.yaml
+  - base-service.yaml
+replicas:
+  - name: scout
+    count: 3
+images:
+  - name: ghcr.io/stefanprodan/podinfo
+    newTag: 6.15.0
+labels:
+  - pairs:
+      env: production
+    includeSelectors: false
+    includeTemplates: true

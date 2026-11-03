@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Fix Forward A Stalled Release (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-039-lab-020-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+
+# Starting state: starfleet plus lookout, version two stuck on a readiness path that does not exist.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create starfleet and release lookout version two with a bad readiness path
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: rollout-complete
+      description: The lookout rollout is complete
+      type: file
+      source: validation/validate-rollout-complete.sh
+      hint: Compare updated, ready and available with desired on the Deployment, and read the Progressing condition and the pod events.
+    - name: fixed-forward
+      description: Version two is kept and the probe path is corrected
+      type: file
+      source: validation/validate-fixed-forward.sh
+      hint: Change only the readiness probe path in the Deployment template. Do not use rollout undo, because it returns to version one.
+    - name: change-cause
+      description: The change is recorded on the Deployment
+      type: file
+      source: validation/validate-change-cause.sh
+      hint: Annotate the Deployment lookout with kubernetes.io/change-cause and mention readyz.
+    - name: lookout-serves
+      description: shuttle gets version two from lookout
+      type: file
+      source: validation/validate-lookout-serves.sh
+      hint: Request the root path of the Service lookout from the shuttle pod.
+
+teardown:
+  keepCluster: false
