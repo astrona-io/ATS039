@@ -19,3 +19,7 @@ You will work through Diagnosing Application Failures, Debugging Failed Releases
 - Relate failed probes to rollout progress.
 - Design a focused reproduce, correct and verify cycle.
 - Choose rollback only when its compatibility requirements hold.
+- Explain pod phases, container states and the status reasons that kubectl reports.
+- Separate the effects of startup, liveness and readiness probe failures.
+- Diagnose image and registry failures from events.
+- Decide between rollback and fix-forward and verify the result after a release.

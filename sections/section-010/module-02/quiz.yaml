@@ -1,0 +1,210 @@
+# Knowledge check for the module. Listed in astrona.yaml after the module summary.
+---
+schema_version: 1
+kind: question_bank
+id: ats039-010-02
+course_id: ATS039
+exam_code: KCNA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-010
+  title: 'GitOps And Deployment Configuration: Principles, Tools And Secrets'
+placement:
+  position: after
+  reading: sections/section-010/module-02/course-06-summary.md
+questions:
+- id: ats039-010-02-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: State the GitOps principles.
+  source_readings:
+  - sections/section-010/module-02/course-03-gitops-principles-and-push-versus-pull.md
+  prompt: Which list matches the four OpenGitOps principles?
+  options:
+  - id: a
+    text: Declarative, versioned and immutable, pulled automatically, continuously
+      reconciled
+    explanation: Correct. These are the four principles of OpenGitOps.
+  - id: b
+    text: Imperative, mutable, pushed, manual
+    explanation: Not correct. These are the four principles of OpenGitOps.
+  - id: c
+    text: Declarative, pushed, scheduled, manual
+    explanation: Not correct. These are the four principles of OpenGitOps.
+  correct_option: a
+  explanation: These are the four principles of OpenGitOps.
+- id: ats039-010-02-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Compare push and pull delivery.
+  source_readings:
+  - sections/section-010/module-02/course-03-gitops-principles-and-push-versus-pull.md
+  prompt: In pull delivery, which component holds the cluster credentials?
+  options:
+  - id: a
+    text: The CI pipeline
+    explanation: Not correct. The controller runs in the cluster and reads the repository.
+  - id: b
+    text: The controller inside the cluster
+    explanation: Correct. The controller runs in the cluster and reads the repository.
+  - id: c
+    text: The developer laptop
+    explanation: Not correct. The controller runs in the cluster and reads the repository.
+  correct_option: b
+  explanation: The controller runs in the cluster and reads the repository.
+- id: ats039-010-02-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Identify push delivery.
+  source_readings:
+  - sections/section-010/module-02/course-03-gitops-principles-and-push-versus-pull.md
+  prompt: A pipeline runs kubectl apply after each commit and then stops. Which statement
+    is correct?
+  options:
+  - id: a
+    text: This is pull-based and continuously reconciled
+    explanation: Not correct. No agent watches the cluster after the run.
+  - id: b
+    text: This is push delivery and does not notice later drift
+    explanation: Correct. No agent watches the cluster after the run.
+  - id: c
+    text: This is GitOps because manifests are in Git
+    explanation: Not correct. No agent watches the cluster after the run.
+  correct_option: b
+  explanation: No agent watches the cluster after the run.
+- id: ats039-010-02-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read field ownership.
+  source_readings:
+  - sections/section-010/module-02/course-03-gitops-principles-and-push-versus-pull.md
+  prompt: After a manual kubectl patch, which part of a ConfigMap shows the change
+    of manager?
+  options:
+  - id: a
+    text: The managedFields entry
+    explanation: Correct. managedFields records the manager of each field.
+  - id: b
+    text: The namespace
+    explanation: Not correct. managedFields records the manager of each field.
+  - id: c
+    text: The resourceVersion label
+    explanation: Not correct. managedFields records the manager of each field.
+  correct_option: a
+  explanation: managedFields records the manager of each field.
+- id: ats039-010-02-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Identify Argo CD resources.
+  source_readings:
+  - sections/section-010/module-02/course-04-argo-cd-and-flux.md
+  prompt: Which Argo CD resource links a repository path to a cluster destination?
+  options:
+  - id: a
+    text: Application
+    explanation: Correct. Application is the main Argo CD kind.
+  - id: b
+    text: GitRepository
+    explanation: Not correct. Application is the main Argo CD kind.
+  - id: c
+    text: HelmRepository
+    explanation: Not correct. Application is the main Argo CD kind.
+  correct_option: a
+  explanation: Application is the main Argo CD kind.
+- id: ats039-010-02-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Interpret Argo CD status.
+  source_readings:
+  - sections/section-010/module-02/course-04-argo-cd-and-flux.md
+  prompt: An application is Synced and Degraded. What does this mean?
+  options:
+  - id: a
+    text: The live state matches Git but the workloads are not healthy
+    explanation: Correct. Sync status and health status are separate.
+  - id: b
+    text: The repository is empty
+    explanation: Not correct. Sync status and health status are separate.
+  - id: c
+    text: The sync is waiting for approval
+    explanation: Not correct. Sync status and health status are separate.
+  correct_option: a
+  explanation: Sync status and health status are separate.
+- id: ats039-010-02-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Identify Flux controllers.
+  source_readings:
+  - sections/section-010/module-02/course-04-argo-cd-and-flux.md
+  prompt: Which Flux resource kind builds a path with Kustomize and applies it?
+  options:
+  - id: a
+    text: Kustomization
+    explanation: Correct. The Flux Kustomization is handled by the Kustomize controller.
+  - id: b
+    text: Application
+    explanation: Not correct. The Flux Kustomization is handled by the Kustomize controller.
+  - id: c
+    text: Rollout
+    explanation: Not correct. The Flux Kustomization is handled by the Kustomize controller.
+  correct_option: a
+  explanation: The Flux Kustomization is handled by the Kustomize controller.
+- id: ats039-010-02-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain prune and self-heal.
+  source_readings:
+  - sections/section-010/module-02/course-04-argo-cd-and-flux.md
+  prompt: What does selfHeal true do in an Argo CD automated sync policy?
+  options:
+  - id: a
+    text: Reverts manual changes to the cluster
+    explanation: Correct. Self-heal restores the desired state after manual change.
+  - id: b
+    text: Deletes the repository
+    explanation: Not correct. Self-heal restores the desired state after manual change.
+  - id: c
+    text: Builds container images
+    explanation: Not correct. Self-heal restores the desired state after manual change.
+  correct_option: a
+  explanation: Self-heal restores the desired state after manual change.
+- id: ats039-010-02-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Compare environment layouts.
+  source_readings:
+  - sections/section-010/module-02/course-05-repository-layout-secrets-and-environments.md
+  prompt: Why do many teams prefer folders per environment to branches per environment?
+  options:
+  - id: a
+    text: Folders are easier to compare and avoid merges of unrelated changes
+    explanation: Correct. A single diff shows the difference between folders.
+  - id: b
+    text: Branches cannot hold YAML
+    explanation: Not correct. A single diff shows the difference between folders.
+  - id: c
+    text: Folders encrypt Secrets
+    explanation: Not correct. A single diff shows the difference between folders.
+  correct_option: a
+  explanation: A single diff shows the difference between folders.
+- id: ats039-010-02-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain secret handling in GitOps.
+  source_readings:
+  - sections/section-010/module-02/course-05-repository-layout-secrets-and-environments.md
+  prompt: Why is committing a Kubernetes Secret manifest unsafe?
+  options:
+  - id: a
+    text: Base64 is an encoding that anyone can decode
+    explanation: Correct. Base64 is not encryption.
+  - id: b
+    text: Git cannot store YAML
+    explanation: Not correct. Base64 is not encryption.
+  - id: c
+    text: Secrets expire after one day
+    explanation: Not correct. Base64 is not encryption.
+  correct_option: a
+  explanation: Base64 is not encryption.

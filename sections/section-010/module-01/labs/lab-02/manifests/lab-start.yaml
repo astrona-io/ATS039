@@ -1,0 +1,60 @@
+# Starting state: the staging release of scout in starfleet, plus an empty
+# outpost namespace (production).
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: outpost
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scout-config
+  namespace: starfleet
+data:
+  PODINFO_UI_MESSAGE: scout-staging
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scout
+  namespace: starfleet
+  labels:
+    app: scout
+  annotations:
+    release.astrona.io/source-revision: 4f2a9c1
+    release.astrona.io/build-id: build-1287
+    kubernetes.io/change-cause: build-1287 from 4f2a9c1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: scout
+  template:
+    metadata:
+      labels:
+        app: scout
+    spec:
+      containers:
+        - name: scout
+          image: ghcr.io/stefanprodan/podinfo:6.15.0
+          envFrom:
+            - configMapRef:
+                name: scout-config
+          ports:
+            - name: http
+              containerPort: 9898
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi

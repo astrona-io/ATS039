@@ -1,0 +1,8 @@
+# Reference solution uses kubectl commands in apply.sh; this file is a note only.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: solution-note
+  namespace: outpost
+data:
+  note: strategy Recreate, revisionHistoryLimit 5, undo to revision 1

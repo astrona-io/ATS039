@@ -1,0 +1,224 @@
+# Knowledge check for the module. Listed in astrona.yaml after the module summary.
+---
+schema_version: 1
+kind: question_bank
+id: ats039-010-01
+course_id: ATS039
+exam_code: KCNA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-010
+  title: 'Build And Release Pipelines: Tools, Supply Chain And Environments'
+placement:
+  position: after
+  reading: sections/section-010/module-01/course-06-summary.md
+questions:
+- id: ats039-010-01-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Describe the building blocks of a CI/CD tool.
+  source_readings:
+  - sections/section-010/module-01/course-03-cicd-tools-and-pipeline-definitions.md
+  prompt: Which part of a pipeline tool executes the steps of a job?
+  options:
+  - id: a
+    text: The runner (agent)
+    explanation: Correct. A runner executes steps; a trigger only starts a run.
+  - id: b
+    text: The trigger
+    explanation: Not correct. A runner executes steps; a trigger only starts a run.
+  - id: c
+    text: The artifact cache
+    explanation: Not correct. A runner executes steps; a trigger only starts a run.
+  correct_option: a
+  explanation: A runner executes steps; a trigger only starts a run.
+- id: ats039-010-01-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Identify Kubernetes-native pipeline tools.
+  source_readings:
+  - sections/section-010/module-01/course-03-cicd-tools-and-pipeline-definitions.md
+  prompt: Which pair of tools defines pipelines as Kubernetes custom resources?
+  options:
+  - id: a
+    text: Jenkins and GitLab CI
+    explanation: Not correct. Tekton and Argo Workflows run steps as pods defined
+      by custom resources.
+  - id: b
+    text: Tekton and Argo Workflows
+    explanation: Correct. Tekton and Argo Workflows run steps as pods defined by custom
+      resources.
+  - id: c
+    text: GitHub Actions and Flux
+    explanation: Not correct. Tekton and Argo Workflows run steps as pods defined
+      by custom resources.
+  correct_option: b
+  explanation: Tekton and Argo Workflows run steps as pods defined by custom resources.
+- id: ats039-010-01-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain pipeline as code.
+  source_readings:
+  - sections/section-010/module-01/course-03-cicd-tools-and-pipeline-definitions.md
+  prompt: Why do teams keep the pipeline definition in the application repository?
+  options:
+  - id: a
+    text: So the pipeline change is reviewed and versioned like code
+    explanation: Correct. A versioned file gives review and history for pipeline changes.
+  - id: b
+    text: So the registry can store it as an image
+    explanation: Not correct. A versioned file gives review and history for pipeline
+      changes.
+  - id: c
+    text: So the cluster can apply it without a controller
+    explanation: Not correct. A versioned file gives review and history for pipeline
+      changes.
+  correct_option: a
+  explanation: A versioned file gives review and history for pipeline changes.
+- id: ats039-010-01-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain stage ordering in a pipeline.
+  source_readings:
+  - sections/section-010/module-01/course-03-cicd-tools-and-pipeline-definitions.md
+  prompt: In a pod, an init container named test exits with code 1. What happens to
+    the init containers after it?
+  options:
+  - id: a
+    text: They run in parallel
+    explanation: Not correct. Init containers run in order and each must succeed first.
+  - id: b
+    text: They do not start, and the pod does not run its main container
+    explanation: Correct. Init containers run in order and each must succeed first.
+  - id: c
+    text: They start after a retry of the main container
+    explanation: Not correct. Init containers run in order and each must succeed first.
+  correct_option: b
+  explanation: Init containers run in order and each must succeed first.
+- id: ats039-010-01-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Distinguish tags from digests.
+  source_readings:
+  - sections/section-010/module-01/course-04-registries-signing-and-supply-chain.md
+  prompt: What does an image digest identify that a tag does not?
+  options:
+  - id: a
+    text: Fixed content that cannot change
+    explanation: Correct. A digest is the hash of the manifest, so it names exact
+      content.
+  - id: b
+    text: The registry user who pushed it
+    explanation: Not correct. A digest is the hash of the manifest, so it names exact
+      content.
+  - id: c
+    text: The namespace that may run it
+    explanation: Not correct. A digest is the hash of the manifest, so it names exact
+      content.
+  correct_option: a
+  explanation: A digest is the hash of the manifest, so it names exact content.
+- id: ats039-010-01-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain what a signature protects.
+  source_readings:
+  - sections/section-010/module-01/course-04-registries-signing-and-supply-chain.md
+  prompt: A pipeline signs the tag latest. Later the tag moves to a new image. What
+    can be concluded?
+  options:
+  - id: a
+    text: The new image inherits the signature
+    explanation: Not correct. Signatures bind to a digest, not to a moving tag.
+  - id: b
+    text: The signature belongs to the old digest and does not cover the new image
+    explanation: Correct. Signatures bind to a digest, not to a moving tag.
+  - id: c
+    text: Signatures are removed by the kubelet
+    explanation: Not correct. Signatures bind to a digest, not to a moving tag.
+  correct_option: b
+  explanation: Signatures bind to a digest, not to a moving tag.
+- id: ats039-010-01-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain what an SBOM is for.
+  source_readings:
+  - sections/section-010/module-01/course-04-registries-signing-and-supply-chain.md
+  prompt: A new vulnerability is announced in a library. How does an SBOM help?
+  options:
+  - id: a
+    text: It lists packages in each image, so affected images can be found
+    explanation: Correct. An SBOM is an inventory of packages and versions.
+  - id: b
+    text: It patches the library at run time
+    explanation: Not correct. An SBOM is an inventory of packages and versions.
+  - id: c
+    text: It blocks pulls from the registry
+    explanation: Not correct. An SBOM is an inventory of packages and versions.
+  correct_option: a
+  explanation: An SBOM is an inventory of packages and versions.
+- id: ats039-010-01-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain admission enforcement.
+  source_readings:
+  - sections/section-010/module-01/course-04-registries-signing-and-supply-chain.md
+  prompt: A team wants the cluster to reject unsigned images. Which component can
+    do this?
+  options:
+  - id: a
+    text: An admission controller policy engine such as Kyverno
+    explanation: Correct. Admission controllers can reject requests that break a policy.
+  - id: b
+    text: The kube-proxy
+    explanation: Not correct. Admission controllers can reject requests that break
+      a policy.
+  - id: c
+    text: The CoreDNS server
+    explanation: Not correct. Admission controllers can reject requests that break
+      a policy.
+  correct_option: a
+  explanation: Admission controllers can reject requests that break a policy.
+- id: ats039-010-01-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain what promotion moves.
+  source_readings:
+  - sections/section-010/module-01/course-05-environments-promotion-and-approvals.md
+  prompt: Staging passed all checks. What should production receive?
+  options:
+  - id: a
+    text: A new build from the same source
+    explanation: Not correct. Only the same artifact makes staging evidence apply.
+  - id: b
+    text: The same artifact reference with production configuration
+    explanation: Correct. Only the same artifact makes staging evidence apply.
+  - id: c
+    text: The staging ConfigMap unchanged
+    explanation: Not correct. Only the same artifact makes staging evidence apply.
+  correct_option: b
+  explanation: Only the same artifact makes staging evidence apply.
+- id: ats039-010-01-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Explain the limit of an approval annotation.
+  source_readings:
+  - sections/section-010/module-01/course-05-environments-promotion-and-approvals.md
+  prompt: A Deployment has the annotation approved-by set. Does Kubernetes block unapproved
+    releases because of it?
+  options:
+  - id: a
+    text: Yes, the API server checks it
+    explanation: Not correct. Annotations are metadata; enforcement needs a gate or
+      admission policy.
+  - id: b
+    text: No, it is only a record unless a policy or pipeline gate enforces it
+    explanation: Correct. Annotations are metadata; enforcement needs a gate or admission
+      policy.
+  - id: c
+    text: Yes, the kubelet checks it before pulling
+    explanation: Not correct. Annotations are metadata; enforcement needs a gate or
+      admission policy.
+  correct_option: b
+  explanation: Annotations are metadata; enforcement needs a gate or admission policy.

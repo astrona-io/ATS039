@@ -1,0 +1,5 @@
+# Starting state: the outpost namespace only. The bootstrap script applies two revisions of relay.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: outpost

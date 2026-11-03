@@ -7,7 +7,7 @@ exam_objectives:
 
 A delivery pipeline is a fixed series of automated steps that turns a source change into software running in an environment. Each step either produces evidence, such as a test result or an image, or it stops the change. This module shows what each step checks, what it proves and what it leaves unproven. It also shows how the same tested artifact moves from one environment to the next.
 
-The module has two parts. The first part follows a source change through the build, the automated checks and the publication of an image, and shows how to read an image's identity in a cluster. The second part explains the difference between continuous delivery and continuous deployment, and promotes one image from a staging namespace to a production namespace while only the configuration changes.
+The module has five parts. The first follows a source change through the build, the automated checks and the publication of an image. The second explains continuous delivery and continuous deployment and promotes one image from staging to production. The third compares CI/CD tools and pipeline definitions. The fourth covers registries, image signing and the software supply chain. The fifth covers environments, promotion and approvals.
 
 ## Learning goals
 

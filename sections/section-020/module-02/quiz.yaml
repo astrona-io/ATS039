@@ -1,0 +1,216 @@
+# Knowledge check for the module. Listed in astrona.yaml after the module summary.
+---
+schema_version: 1
+kind: question_bank
+id: ats039-020-02
+course_id: ATS039
+exam_code: KCNA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-020
+  title: Debugging
+placement:
+  position: after
+  reading: sections/section-020/module-02/course-06-summary.md
+questions:
+- id: ats039-020-02-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Recognise pull failures.
+  source_readings:
+  - sections/section-020/module-02/course-03-image-and-registry-failures.md
+  prompt: Which statuses show an image pull failure?
+  options:
+  - id: a
+    text: CrashLoopBackOff and Completed
+    explanation: Not correct. The kubelet reports pull errors and the retry delay.
+  - id: b
+    text: Pending and Running
+    explanation: Not correct. The kubelet reports pull errors and the retry delay.
+  - id: c
+    text: ErrImagePull and ImagePullBackOff
+    explanation: Correct. The kubelet reports pull errors and the retry delay.
+  correct_option: c
+  explanation: The kubelet reports pull errors and the retry delay.
+- id: ats039-020-02-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Find the pull cause.
+  source_readings:
+  - sections/section-020/module-02/course-03-image-and-registry-failures.md
+  prompt: Where is the exact registry error for a failed pull?
+  options:
+  - id: a
+    text: In the Service endpoints
+    explanation: Not correct. describe pod prints the Failed event with the registry
+      answer.
+  - id: b
+    text: In the pod events
+    explanation: Correct. describe pod prints the Failed event with the registry answer.
+  - id: c
+    text: In the node kernel log only
+    explanation: Not correct. describe pod prints the Failed event with the registry
+      answer.
+  correct_option: b
+  explanation: describe pod prints the Failed event with the registry answer.
+- id: ats039-020-02-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Use imagePullSecrets.
+  source_readings:
+  - sections/section-020/module-02/course-03-image-and-registry-failures.md
+  prompt: A private image fails with unauthorized. What fixes it?
+  options:
+  - id: a
+    text: A dockerconfigjson Secret in the pod namespace listed in imagePullSecrets
+    explanation: Correct. The Secret must be in the same namespace as the pod.
+  - id: b
+    text: A larger memory limit
+    explanation: Not correct. The Secret must be in the same namespace as the pod.
+  - id: c
+    text: A new Service
+    explanation: Not correct. The Secret must be in the same namespace as the pod.
+  correct_option: a
+  explanation: The Secret must be in the same namespace as the pod.
+- id: ats039-020-02-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain rolling update with a bad image.
+  source_readings:
+  - sections/section-020/module-02/course-03-image-and-registry-failures.md
+  prompt: A rolling update uses a bad image tag. What happens to the old pods?
+  options:
+  - id: a
+    text: They are deleted at once
+    explanation: Not correct. The rollout stalls and old ready pods remain.
+  - id: b
+    text: They restart with the new tag
+    explanation: Not correct. The rollout stalls and old ready pods remain.
+  - id: c
+    text: They keep serving while the new pod cannot start
+    explanation: Correct. The rollout stalls and old ready pods remain.
+  correct_option: c
+  explanation: The rollout stalls and old ready pods remain.
+- id: ats039-020-02-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Read revisions.
+  source_readings:
+  - sections/section-020/module-02/course-04-rollback-decisions-and-fix-forward.md
+  prompt: Which command lists the revisions of a Deployment?
+  options:
+  - id: a
+    text: kubectl get revisions
+    explanation: Not correct. rollout history prints revisions and change causes.
+  - id: b
+    text: kubectl rollout history deployment/NAME
+    explanation: Correct. rollout history prints revisions and change causes.
+  - id: c
+    text: kubectl logs deployment/NAME
+    explanation: Not correct. rollout history prints revisions and change causes.
+  correct_option: b
+  explanation: rollout history prints revisions and change causes.
+- id: ats039-020-02-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose rollback or fix-forward.
+  source_readings:
+  - sections/section-020/module-02/course-04-rollback-decisions-and-fix-forward.md
+  prompt: The new version changed a database schema that the old version cannot read.
+    What should the team do?
+  options:
+  - id: a
+    text: Fix forward
+    explanation: Correct. Rollback is unsafe when state is incompatible.
+  - id: b
+    text: Roll back at once
+    explanation: Not correct. Rollback is unsafe when state is incompatible.
+  - id: c
+    text: Delete the database
+    explanation: Not correct. Rollback is unsafe when state is incompatible.
+  correct_option: a
+  explanation: Rollback is unsafe when state is incompatible.
+- id: ats039-020-02-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know what undo restores.
+  source_readings:
+  - sections/section-020/module-02/course-04-rollback-decisions-and-fix-forward.md
+  prompt: Which object does kubectl rollout undo not restore?
+  options:
+  - id: a
+    text: The pod template image
+    explanation: Not correct. Only the pod template is restored.
+  - id: b
+    text: The container environment in the template
+    explanation: Not correct. Only the pod template is restored.
+  - id: c
+    text: A changed ConfigMap
+    explanation: Correct. Only the pod template is restored.
+  correct_option: c
+  explanation: Only the pod template is restored.
+- id: ats039-020-02-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Check a GitOps rollback.
+  source_readings:
+  - sections/section-020/module-02/course-04-rollback-decisions-and-fix-forward.md
+  prompt: A rollback with kubectl is undone later by a GitOps controller. Why?
+  options:
+  - id: a
+    text: kubectl cannot roll back
+    explanation: Not correct. The controller reconciles toward the repository; revert
+      the commit.
+  - id: b
+    text: The repository still holds the new version
+    explanation: Correct. The controller reconciles toward the repository; revert
+      the commit.
+  - id: c
+    text: The kubelet reverts it
+    explanation: Not correct. The controller reconciles toward the repository; revert
+      the commit.
+  correct_option: b
+  explanation: The controller reconciles toward the repository; revert the commit.
+- id: ats039-020-02-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Verify a release.
+  source_readings:
+  - sections/section-020/module-02/course-05-post-release-verification-and-incident-notes.md
+  prompt: Which fact best shows that users can reach the new version?
+  options:
+  - id: a
+    text: A smoke test through the Service succeeds
+    explanation: Correct. A request through the Service tests the real path.
+  - id: b
+    text: The rollout command returned
+    explanation: Not correct. A request through the Service tests the real path.
+  - id: c
+    text: The Deployment was applied
+    explanation: Not correct. A request through the Service tests the real path.
+  correct_option: a
+  explanation: A request through the Service tests the real path.
+- id: ats039-020-02-q10
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Write incident notes.
+  source_readings:
+  - sections/section-020/module-02/course-05-post-release-verification-and-incident-notes.md
+  prompt: Which item belongs in an incident review?
+  options:
+  - id: a
+    text: The name of the person to blame
+    explanation: Not correct. Reviews describe the system and the change that prevents
+      a repeat.
+  - id: b
+    text: Only the time of the fix
+    explanation: Not correct. Reviews describe the system and the change that prevents
+      a repeat.
+  - id: c
+    text: The cause and a concrete follow-up change
+    explanation: Correct. Reviews describe the system and the change that prevents
+      a repeat.
+  correct_option: c
+  explanation: Reviews describe the system and the change that prevents a repeat.

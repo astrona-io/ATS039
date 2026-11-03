@@ -7,7 +7,7 @@ exam_objectives:
 
 GitOps is a way to deliver applications in which a version-controlled repository holds the desired state of the system, and a software agent inside the cluster keeps the live state equal to it. The team changes the repository, and the agent applies the change. This module shows what desired state is, how a pull-based reconciliation loop finds and corrects drift, and how Helm and Kustomize produce the manifests that the repository holds.
 
-The module has two parts. The first part builds a small reconciliation step by hand with `kubectl diff` and `kubectl apply`, creates drift on purpose and corrects it, and explains what such a controller cannot know. The second part renders the same application with Kustomize overlays and with a Helm chart, and compares the two approaches.
+The module has five parts. The first builds a small reconciliation step by hand, creates drift on purpose and corrects it. The second renders the same application with Kustomize overlays and with a Helm chart. The third states the four OpenGitOps principles and compares push and pull delivery. The fourth describes Argo CD and Flux. The fifth covers repository layout, secrets and multiple environments.
 
 ## Learning goals
 

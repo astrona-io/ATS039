@@ -11,6 +11,13 @@ You will work through Build And Release Pipelines, GitOps And Deployment Configu
 
 ## Learning Outcomes
 
+- Compare CI/CD tools and explain pipeline definitions as code.
+- Explain image signing, SBOMs and supply chain controls.
+- State the four OpenGitOps principles and compare push with pull delivery.
+- Describe Argo CD and Flux resources.
+- Compare recreate, A/B, shadow and feature flag strategies and explain progressive delivery tools.
+- Explain what a rollback restores and what it cannot.
+
 - Trace source changes through build, checks and artifact publication.
 - Explain what continuous integration checks.
 - Distinguish continuous delivery from continuous deployment.

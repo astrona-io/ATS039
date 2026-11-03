@@ -1,0 +1,221 @@
+# Knowledge check for the module. Listed in astrona.yaml after the module summary.
+---
+schema_version: 1
+kind: question_bank
+id: ats039-020-01
+course_id: ATS039
+exam_code: KCNA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-020
+  title: Debugging
+placement:
+  position: after
+  reading: sections/section-020/module-01/course-06-summary.md
+questions:
+- id: ats039-020-01-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Separate phase from container state.
+  source_readings:
+  - sections/section-020/module-01/course-03-pod-lifecycle-states-and-status-reasons.md
+  prompt: A container crash-loops while its pod keeps the phase Running. Why?
+  options:
+  - id: a
+    text: The phase never changes after creation
+    explanation: Not correct. The phase describes the pod; the restart delay is a
+      container waiting reason.
+  - id: b
+    text: CrashLoopBackOff is a pod phase
+    explanation: Not correct. The phase describes the pod; the restart delay is a
+      container waiting reason.
+  - id: c
+    text: The pod still exists on its node and the kubelet restarts the container
+    explanation: Correct. The phase describes the pod; the restart delay is a container
+      waiting reason.
+  correct_option: c
+  explanation: The phase describes the pod; the restart delay is a container waiting
+    reason.
+- id: ats039-020-01-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read exit codes.
+  source_readings:
+  - sections/section-020/module-01/course-03-pod-lifecycle-states-and-status-reasons.md
+  prompt: A container terminated with exit code 137. What does it mean?
+  options:
+  - id: a
+    text: The process finished successfully
+    explanation: Not correct. Codes above 128 are 128 plus the signal number.
+  - id: b
+    text: The process ended by SIGKILL (128 plus 9)
+    explanation: Correct. Codes above 128 are 128 plus the signal number.
+  - id: c
+    text: The image could not be pulled
+    explanation: Not correct. Codes above 128 are 128 plus the signal number.
+  correct_option: b
+  explanation: Codes above 128 are 128 plus the signal number.
+- id: ats039-020-01-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Map statuses to causes.
+  source_readings:
+  - sections/section-020/module-01/course-03-pod-lifecycle-states-and-status-reasons.md
+  prompt: Which status points to a ConfigMap key that does not exist?
+  options:
+  - id: a
+    text: CreateContainerConfigError
+    explanation: Correct. The kubelet cannot build the container environment.
+  - id: b
+    text: ImagePullBackOff
+    explanation: Not correct. The kubelet cannot build the container environment.
+  - id: c
+    text: Completed
+    explanation: Not correct. The kubelet cannot build the container environment.
+  correct_option: a
+  explanation: The kubelet cannot build the container environment.
+- id: ats039-020-01-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Recognise Completed.
+  source_readings:
+  - sections/section-020/module-01/course-03-pod-lifecycle-states-and-status-reasons.md
+  prompt: A Deployment pod shows Completed and restarts. What does this suggest?
+  options:
+  - id: a
+    text: The node ran out of memory
+    explanation: Not correct. Completed is normal for a Job and wrong for a long-running
+      server.
+  - id: b
+    text: The Service has no endpoints
+    explanation: Not correct. Completed is normal for a Job and wrong for a long-running
+      server.
+  - id: c
+    text: The process exits with code 0 although the Deployment expects a long-running
+      process
+    explanation: Correct. Completed is normal for a Job and wrong for a long-running
+      server.
+  correct_option: c
+  explanation: Completed is normal for a Job and wrong for a long-running server.
+- id: ats039-020-01-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Separate probe consequences.
+  source_readings:
+  - sections/section-020/module-01/course-04-probes-and-health-failures.md
+  prompt: A readiness probe fails. What does Kubernetes do?
+  options:
+  - id: a
+    text: Restarts the container
+    explanation: Not correct. Readiness only controls traffic.
+  - id: b
+    text: Removes the pod from the Service endpoints
+    explanation: Correct. Readiness only controls traffic.
+  - id: c
+    text: Deletes the pod
+    explanation: Not correct. Readiness only controls traffic.
+  correct_option: b
+  explanation: Readiness only controls traffic.
+- id: ats039-020-01-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Diagnose restarts.
+  source_readings:
+  - sections/section-020/module-01/course-04-probes-and-health-failures.md
+  prompt: RESTARTS grows and events show Liveness probe failed. Which component restarts
+    the container?
+  options:
+  - id: a
+    text: The kubelet
+    explanation: Correct. The kubelet runs probes and restarts containers.
+  - id: b
+    text: The scheduler
+    explanation: Not correct. The kubelet runs probes and restarts containers.
+  - id: c
+    text: The Service
+    explanation: Not correct. The kubelet runs probes and restarts containers.
+  correct_option: a
+  explanation: The kubelet runs probes and restarts containers.
+- id: ats039-020-01-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Use the startup probe.
+  source_readings:
+  - sections/section-020/module-01/course-04-probes-and-health-failures.md
+  prompt: A slow-starting application is killed in a loop by its liveness probe. Which
+    setting helps?
+  options:
+  - id: a
+    text: A larger replica count
+    explanation: Not correct. The startup probe holds back the other probes.
+  - id: b
+    text: A Service of type NodePort
+    explanation: Not correct. The startup probe holds back the other probes.
+  - id: c
+    text: A startup probe
+    explanation: Correct. The startup probe holds back the other probes.
+  correct_option: c
+  explanation: The startup probe holds back the other probes.
+- id: ats039-020-01-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Find a readiness failure.
+  source_readings:
+  - sections/section-020/module-01/course-04-probes-and-health-failures.md
+  prompt: A pod is Running with 0/1 ready and no restarts, and the Service has no
+    endpoints. What is likely?
+  options:
+  - id: a
+    text: A failing liveness probe
+    explanation: Not correct. Readiness failures keep the pod out of endpoints without
+      restarts.
+  - id: b
+    text: A failing readiness probe
+    explanation: Correct. Readiness failures keep the pod out of endpoints without
+      restarts.
+  - id: c
+    text: A missing image
+    explanation: Not correct. Readiness failures keep the pod out of endpoints without
+      restarts.
+  correct_option: b
+  explanation: Readiness failures keep the pod out of endpoints without restarts.
+- id: ats039-020-01-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read a crashed container log.
+  source_readings:
+  - sections/section-020/module-01/course-05-logs-and-events-at-scale.md
+  prompt: Which flag shows the log of the container instance before the last restart?
+  options:
+  - id: a
+    text: "--previous (or -p)"
+    explanation: Correct. The previous log holds the crash cause.
+  - id: b
+    text: "--follow"
+    explanation: Not correct. The previous log holds the crash cause.
+  - id: c
+    text: "--since-time"
+    explanation: Not correct. The previous log holds the crash cause.
+  correct_option: a
+  explanation: The previous log holds the crash cause.
+- id: ats039-020-01-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Use events.
+  source_readings:
+  - sections/section-020/module-01/course-05-logs-and-events-at-scale.md
+  prompt: How do you list only warning events in a namespace?
+  options:
+  - id: a
+    text: kubectl logs --warnings
+    explanation: Not correct. Events accept field selectors.
+  - id: b
+    text: kubectl describe node
+    explanation: Not correct. Events accept field selectors.
+  - id: c
+    text: kubectl get events --field-selector type=Warning
+    explanation: Correct. Events accept field selectors.
+  correct_option: c
+  explanation: Events accept field selectors.

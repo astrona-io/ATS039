@@ -7,7 +7,7 @@ exam_objectives:
 
 A release can fail while everything looks fine on the surface: the new version was requested, the command returned success, and users still see the old behavior. This module teaches how to compare what was requested with what is running, how to read rollout progress and probe failures, and how to repair a release with a controlled cycle of reproducing, correcting and verifying.
 
-The module has two parts. The first part compares the desired Pod template with the observed ReplicaSets, Pods and image identities, and relates a failing readiness probe to a stalled rollout. The second part reproduces a failure outside the live workload, corrects it with one change, verifies the result with observable evidence, and explains when a rollback is the right choice and when it is not.
+The module has five parts. The first compares the desired Pod template with the observed ReplicaSets, Pods and images and relates a failing readiness probe to a stalled rollout. The second reproduces a failure outside the live workload, corrects it and verifies the result. The third covers image and registry failures. The fourth covers rollback decisions and fix-forward. The fifth covers post-release verification and incident notes.
 
 ## Learning goals
 

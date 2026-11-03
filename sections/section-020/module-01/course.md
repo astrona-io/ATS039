@@ -7,7 +7,7 @@ exam_objectives:
 
 When an application stops working, the first job is to find out which kind of failure it is. Either the process does not run correctly, or the process runs and its answers are wrong. The two kinds need different evidence and different fixes. This module teaches how to read that evidence in Kubernetes: logs, exit codes, pod and container states, events, endpoints and HTTP status codes.
 
-The module has two parts. The first part creates a crashing container and reads its logs, exit code and restart behavior, and compares the failure states `CrashLoopBackOff`, `ImagePullBackOff` and `CreateContainerConfigError`. The second part follows configuration references and dependency access, reads HTTP status codes, correlates a request with a request identifier and shows how to reproduce a failing request without changing the live workload.
+The module has five parts. The first creates a crashing container and reads its logs, exit code and restart behavior. The second follows configuration references, dependency access and request failures. The third explains pod phases, container states and the status reasons that kubectl shows. The fourth separates startup, liveness and readiness probes and their failures. The fifth covers log flags, events and output formats for many objects.
 
 ## Learning goals
 

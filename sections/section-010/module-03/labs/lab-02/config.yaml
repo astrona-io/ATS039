@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Change Strategy And Roll Back A Stuck Release (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-039-lab-010-03-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+
+# Starting state: a relay Deployment with a healthy revision and a stuck revision
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the starting state
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: strategy-recreate
+      description: The strategy is Recreate and the history limit is 5
+      type: file
+      source: validation/validate-strategy.sh
+      hint: Patch spec.strategy.type to Recreate, clear rollingUpdate, set revisionHistoryLimit to 5.
+    - name: rolled-back
+      description: relay runs MODE=v1 with two available replicas
+      type: file
+      source: validation/validate-rolled-back.sh
+      hint: Use kubectl rollout undo with --to-revision for the revision that has MODE=v1.
+    - name: change-cause
+      description: The change cause records the rollback
+      type: file
+      source: validation/validate-change-cause.sh
+      hint: Annotate the Deployment with kubernetes.io/change-cause.
+
+teardown:
+  keepCluster: false

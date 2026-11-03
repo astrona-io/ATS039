@@ -1,0 +1,209 @@
+# Knowledge check for the module. Listed in astrona.yaml after the module summary.
+---
+schema_version: 1
+kind: question_bank
+id: ats039-010-03
+course_id: ATS039
+exam_code: KCNA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-010
+  title: 'Safe Application Releases: Strategies, Tooling And Rollback Limits'
+placement:
+  position: after
+  reading: sections/section-010/module-03/course-06-summary.md
+questions:
+- id: ats039-010-03-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Describe the recreate strategy.
+  source_readings:
+  - sections/section-010/module-03/course-03-recreate-ab-shadow-and-feature-flags.md
+  prompt: What happens in a Deployment with strategy type Recreate during an update?
+  options:
+  - id: a
+    text: All old pods stop before new pods start
+    explanation: Correct. Recreate causes a short downtime by design.
+  - id: b
+    text: Pods are replaced one at a time
+    explanation: Not correct. Recreate causes a short downtime by design.
+  - id: c
+    text: Traffic is mirrored
+    explanation: Not correct. Recreate causes a short downtime by design.
+  correct_option: a
+  explanation: Recreate causes a short downtime by design.
+- id: ats039-010-03-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose a strategy.
+  source_readings:
+  - sections/section-010/module-03/course-03-recreate-ab-shadow-and-feature-flags.md
+  prompt: Two versions cannot share one database schema at the same time. Which strategy
+    fits?
+  options:
+  - id: a
+    text: Canary
+    explanation: Not correct. Recreate never runs two versions together.
+  - id: b
+    text: Recreate
+    explanation: Correct. Recreate never runs two versions together.
+  - id: c
+    text: Shadow
+    explanation: Not correct. Recreate never runs two versions together.
+  correct_option: b
+  explanation: Recreate never runs two versions together.
+- id: ats039-010-03-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Compare A/B and canary.
+  source_readings:
+  - sections/section-010/module-03/course-03-recreate-ab-shadow-and-feature-flags.md
+  prompt: How does an A/B test differ from a canary release?
+  options:
+  - id: a
+    text: It selects users by a rule and compares a result
+    explanation: Correct. A/B tests assign users by rule; canaries test safety.
+  - id: b
+    text: It never uses Services
+    explanation: Not correct. A/B tests assign users by rule; canaries test safety.
+  - id: c
+    text: It needs no new version
+    explanation: Not correct. A/B tests assign users by rule; canaries test safety.
+  correct_option: a
+  explanation: A/B tests assign users by rule; canaries test safety.
+- id: ats039-010-03-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain shadow traffic.
+  source_readings:
+  - sections/section-010/module-03/course-03-recreate-ab-shadow-and-feature-flags.md
+  prompt: What happens to the response of the shadow version?
+  options:
+  - id: a
+    text: It is sent to users
+    explanation: Not correct. Users see only the stable version's response.
+  - id: b
+    text: It is discarded
+    explanation: Correct. Users see only the stable version's response.
+  - id: c
+    text: It is cached by the Service
+    explanation: Not correct. Users see only the stable version's response.
+  correct_option: b
+  explanation: Users see only the stable version's response.
+- id: ats039-010-03-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain feature flags.
+  source_readings:
+  - sections/section-010/module-03/course-03-recreate-ab-shadow-and-feature-flags.md
+  prompt: What do feature flags separate?
+  options:
+  - id: a
+    text: Deploying code from releasing a feature
+    explanation: Correct. The code ships switched off and a flag enables it.
+  - id: b
+    text: Pods from nodes
+    explanation: Not correct. The code ships switched off and a flag enables it.
+  - id: c
+    text: Images from registries
+    explanation: Not correct. The code ships switched off and a flag enables it.
+  correct_option: a
+  explanation: The code ships switched off and a flag enables it.
+- id: ats039-010-03-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know the limit of Deployments.
+  source_readings:
+  - sections/section-010/module-03/course-04-progressive-delivery-tooling.md
+  prompt: Which rollout need cannot be met by a plain Deployment?
+  options:
+  - id: a
+    text: Holding at 10 percent traffic until a metric passes
+    explanation: Correct. A Deployment has no traffic weights or metric gates.
+  - id: b
+    text: Replacing pods one by one
+    explanation: Not correct. A Deployment has no traffic weights or metric gates.
+  - id: c
+    text: Keeping a revision history
+    explanation: Not correct. A Deployment has no traffic weights or metric gates.
+  correct_option: a
+  explanation: A Deployment has no traffic weights or metric gates.
+- id: ats039-010-03-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Identify Argo Rollouts.
+  source_readings:
+  - sections/section-010/module-03/course-04-progressive-delivery-tooling.md
+  prompt: Which resource replaces a Deployment in Argo Rollouts and lists canary steps?
+  options:
+  - id: a
+    text: Rollout
+    explanation: Correct. Rollout holds the strategy and steps.
+  - id: b
+    text: Application
+    explanation: Not correct. Rollout holds the strategy and steps.
+  - id: c
+    text: Canary
+    explanation: Not correct. Rollout holds the strategy and steps.
+  correct_option: a
+  explanation: Rollout holds the strategy and steps.
+- id: ats039-010-03-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain metric gates.
+  source_readings:
+  - sections/section-010/module-03/course-04-progressive-delivery-tooling.md
+  prompt: An analysis queries a metric that has no data. What is a risk?
+  options:
+  - id: a
+    text: The check may pass without evidence
+    explanation: Correct. Missing data must count as a failure.
+  - id: b
+    text: The pods restart
+    explanation: Not correct. Missing data must count as a failure.
+  - id: c
+    text: The Service is deleted
+    explanation: Not correct. Missing data must count as a failure.
+  correct_option: a
+  explanation: Missing data must count as a failure.
+- id: ats039-010-03-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know what undo restores.
+  source_readings:
+  - sections/section-010/module-03/course-05-rollback-limits-and-compatible-changes.md
+  prompt: What does kubectl rollout undo restore?
+  options:
+  - id: a
+    text: The pod template of the previous revision
+    explanation: Correct. Only the pod template is restored.
+  - id: b
+    text: The database contents
+    explanation: Not correct. Only the pod template is restored.
+  - id: c
+    text: Changed ConfigMaps
+    explanation: Not correct. Only the pod template is restored.
+  correct_option: a
+  explanation: Only the pod template is restored.
+- id: ats039-010-03-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Apply expand and contract.
+  source_readings:
+  - sections/section-010/module-03/course-05-rollback-limits-and-compatible-changes.md
+  prompt: A release must rename a database column and keep rollback possible. What
+    is the first step?
+  options:
+  - id: a
+    text: Drop the old column
+    explanation: Not correct. Expand first, so both versions still work.
+  - id: b
+    text: Add the new column while the old one stays
+    explanation: Correct. Expand first, so both versions still work.
+  - id: c
+    text: Roll forward immediately
+    explanation: Not correct. Expand first, so both versions still work.
+  correct_option: b
+  explanation: Expand first, so both versions still work.

@@ -82,8 +82,47 @@ modules:
     - name: Kubernetes Jobs
       url: https://kubernetes.io/docs/concepts/workloads/controllers/job/
   - type: reading
+    title: CI/CD Tools And Pipeline Definitions
+    path: sections/section-010/module-01/course-03-cicd-tools-and-pipeline-definitions.md
+  - type: reading
+    title: Registries, Image Signing And Supply Chain
+    path: sections/section-010/module-01/course-04-registries-signing-and-supply-chain.md
+  - type: reading
+    title: Environments, Promotion And Approvals
+    path: sections/section-010/module-01/course-05-environments-promotion-and-approvals.md
+  - type: reading
+    title: Question
+    path: sections/section-010/module-01/labs/lab-02/question.md
+  - type: lab
+    title: Gate And Promote A Release With Evidence Lab
+    path: sections/section-010/module-01/labs/lab-02
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: release-pipeline
+    task_kind: build
+    tags:
+    - gate
+    - init-containers
+    - approval
+    - promotion
+    - annotations
+    learning_goals:
+    - Run ordered gate checks as a Job with init containers
+    - Record an approval annotation on the staging release
+    - Promote the staging image with the approval evidence copied
+    resources:
+    - name: Kubernetes Jobs
+      url: https://kubernetes.io/docs/concepts/workloads/controllers/job/
+    - name: Annotations
+      url: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  - type: reading
     title: Summary
-    path: sections/section-010/module-01/course-03-summary.md
+    path: sections/section-010/module-01/course-06-summary.md
+  - type: quiz
+    title: 'Knowledge Check: Build And Release Pipelines'
+    path: sections/section-010/module-01/quiz.yaml
+    question_count: 10
+    pass_score: 70
   - type: reading
     title: GitOps And Deployment Configuration
     path: sections/section-010/module-02/course.md
@@ -122,8 +161,45 @@ modules:
     - name: Kubernetes objects management
       url: https://kubernetes.io/docs/concepts/overview/working-with-objects/object-management/
   - type: reading
+    title: GitOps Principles And Push Versus Pull
+    path: sections/section-010/module-02/course-03-gitops-principles-and-push-versus-pull.md
+  - type: reading
+    title: Argo CD And Flux
+    path: sections/section-010/module-02/course-04-argo-cd-and-flux.md
+  - type: reading
+    title: Repository Layout, Secrets And Environments
+    path: sections/section-010/module-02/course-05-repository-layout-secrets-and-environments.md
+  - type: reading
+    title: Question
+    path: sections/section-010/module-02/labs/lab-02/question.md
+  - type: lab
+    title: Reconcile, Prune And Record A Revision Lab
+    path: sections/section-010/module-02/labs/lab-02
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: gitops
+    task_kind: build
+    tags:
+    - gitops
+    - reconciliation
+    - prune
+    - kubectl-diff
+    - revision
+    learning_goals:
+    - Apply the desired state from a repository stand-in with kubectl diff and apply
+    - Prune a labelled object that the repository does not list
+    - Record the applied revision as an annotation
+    resources:
+    - name: Declarative management of Kubernetes objects
+      url: https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/
+  - type: reading
     title: Summary
-    path: sections/section-010/module-02/course-03-summary.md
+    path: sections/section-010/module-02/course-06-summary.md
+  - type: quiz
+    title: 'Knowledge Check: GitOps And Deployment Configuration'
+    path: sections/section-010/module-02/quiz.yaml
+    question_count: 10
+    pass_score: 70
   - type: reading
     title: Safe Application Releases
     path: sections/section-010/module-03/course.md
@@ -161,8 +237,44 @@ modules:
     - name: Kubernetes Services
       url: https://kubernetes.io/docs/concepts/services-networking/service/
   - type: reading
+    title: Recreate, A/B Testing, Shadow And Feature Flags
+    path: sections/section-010/module-03/course-03-recreate-ab-shadow-and-feature-flags.md
+  - type: reading
+    title: Progressive Delivery Tooling
+    path: sections/section-010/module-03/course-04-progressive-delivery-tooling.md
+  - type: reading
+    title: Rollback Limits And Compatible Changes
+    path: sections/section-010/module-03/course-05-rollback-limits-and-compatible-changes.md
+  - type: reading
+    title: Question
+    path: sections/section-010/module-03/labs/lab-02/question.md
+  - type: lab
+    title: Change Strategy And Roll Back A Stuck Release Lab
+    path: sections/section-010/module-03/labs/lab-02
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: rollout
+    task_kind: build
+    tags:
+    - recreate
+    - revision-history
+    - rollout-undo
+    - change-cause
+    learning_goals:
+    - Switch a Deployment to the Recreate strategy
+    - Set revisionHistoryLimit and read revision history
+    - Roll back to a named revision and record the cause
+    resources:
+    - name: Kubernetes Deployments
+      url: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+  - type: reading
     title: Summary
-    path: sections/section-010/module-03/course-03-summary.md
+    path: sections/section-010/module-03/course-06-summary.md
+  - type: quiz
+    title: 'Knowledge Check: Safe Application Releases'
+    path: sections/section-010/module-03/quiz.yaml
+    question_count: 10
+    pass_score: 70
   - type: reading
     title: Question
     path: sections/section-010/capstone/question.md
@@ -238,8 +350,47 @@ modules:
     - name: Debug Services
       url: https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/
   - type: reading
+    title: Pod Lifecycle States And Status Reasons
+    path: sections/section-020/module-01/course-03-pod-lifecycle-states-and-status-reasons.md
+  - type: reading
+    title: Probes And Health Failures
+    path: sections/section-020/module-01/course-04-probes-and-health-failures.md
+  - type: reading
+    title: Logs And Events At Scale
+    path: sections/section-020/module-01/course-05-logs-and-events-at-scale.md
+  - type: reading
+    title: Question
+    path: sections/section-020/module-01/labs/lab-02/question.md
+  - type: lab
+    title: Fix Probe And Image Failures Lab
+    path: sections/section-020/module-01/labs/lab-02
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: troubleshooting
+    task_kind: troubleshooting
+    tags:
+    - liveness-probe
+    - readiness-probe
+    - endpoints
+    - imagepullbackoff
+    - events
+    learning_goals:
+    - Correct a liveness probe path that restarts a container
+    - Restore Service endpoints by correcting a readiness probe
+    - Correct an image tag that cannot be pulled
+    resources:
+    - name: Configure liveness, readiness and startup probes
+      url: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+    - name: Debug Pods
+      url: https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/
+  - type: reading
     title: Summary
-    path: sections/section-020/module-01/course-03-summary.md
+    path: sections/section-020/module-01/course-06-summary.md
+  - type: quiz
+    title: 'Knowledge Check: Diagnosing Application Failures'
+    path: sections/section-020/module-01/quiz.yaml
+    question_count: 10
+    pass_score: 70
   - type: reading
     title: Debugging Failed Releases
     path: sections/section-020/module-02/course.md
@@ -277,8 +428,45 @@ modules:
     - name: Configure liveness, readiness and startup probes
       url: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   - type: reading
+    title: Image And Registry Failures
+    path: sections/section-020/module-02/course-03-image-and-registry-failures.md
+  - type: reading
+    title: Rollback Decisions And Fix-Forward
+    path: sections/section-020/module-02/course-04-rollback-decisions-and-fix-forward.md
+  - type: reading
+    title: Post-Release Verification And Incident Notes
+    path: sections/section-020/module-02/course-05-post-release-verification-and-incident-notes.md
+  - type: reading
+    title: Question
+    path: sections/section-020/module-02/labs/lab-02/question.md
+  - type: lab
+    title: Roll Back An Image Failure And Verify Lab
+    path: sections/section-020/module-02/labs/lab-02
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: troubleshooting
+    task_kind: troubleshooting
+    tags:
+    - rollout-undo
+    - imagepullbackoff
+    - change-cause
+    - smoke-test
+    - job
+    learning_goals:
+    - Roll back a release whose image tag does not exist
+    - Record the reason in the change-cause annotation
+    - Verify the result with a smoke test Job
+    resources:
+    - name: Kubernetes Deployments
+      url: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+  - type: reading
     title: Summary
-    path: sections/section-020/module-02/course-03-summary.md
+    path: sections/section-020/module-02/course-06-summary.md
+  - type: quiz
+    title: 'Knowledge Check: Debugging Failed Releases'
+    path: sections/section-020/module-02/quiz.yaml
+    question_count: 10
+    pass_score: 70
   - type: reading
     title: Question
     path: sections/section-020/capstone/question.md

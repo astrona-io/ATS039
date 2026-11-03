@@ -7,7 +7,7 @@ exam_objectives:
 
 A release changes software that users already depend on. A safe release changes it in steps, watches evidence after each step and keeps a way back. This module shows how Kubernetes replaces pods during a rolling update, how probes decide whether a new pod may receive traffic, and how blue-green and canary strategies limit the damage of a bad version.
 
-The module has two parts. The first part runs a rolling update, watches the old and new ReplicaSets, breaks a release with a failing readiness probe and rolls it back. The second part builds a blue-green switch and a canary with two Deployments behind one Service, and explains which evidence justifies promoting a release and what a rollback cannot undo.
+The module has five parts. The first runs a rolling update, breaks a release with a failing readiness probe and rolls it back. The second builds a blue-green switch and a canary and explains the evidence for promotion. The third covers recreate, A/B testing, shadow traffic and feature flags. The fourth covers progressive delivery tools. The fifth covers rollback limits and backward-compatible changes.
 
 ## Learning goals
 

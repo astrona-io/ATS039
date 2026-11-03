@@ -1,5 +1,7 @@
+---
 version: 1
-approval: KCNA-LESSON-PLAN.md approved; hands-on scope (playgrounds, labs, capstones, quiz.yaml) approved by the maintainer
+approval: KCNA-LESSON-PLAN.md approved; hands-on scope (playgrounds, labs, capstones,
+  quiz.yaml) approved by the maintainer
 course:
   id: ATS039
   certification:
@@ -32,6 +34,9 @@ sections:
     outline:
     - Source Changes And Build Evidence
     - Delivery, Deployment And Promotion Decisions
+    - CI/CD Tools And Pipeline Definitions
+    - Registries, Image Signing And Supply Chain
+    - Environments, Promotion And Approvals
     playground: true
     module_lab: true
     diagrams: []
@@ -45,6 +50,9 @@ sections:
     outline:
     - GitOps Reconciliation And Drift
     - Helm, Kustomize And Configuration Rendering
+    - GitOps Principles And Push Versus Pull
+    - Argo CD And Flux
+    - Repository Layout, Secrets And Environments
     playground: true
     module_lab: true
     diagrams: []
@@ -58,6 +66,9 @@ sections:
     outline:
     - Rolling Updates And Health Gates
     - Blue-Green, Canary And Release Evidence
+    - Recreate, A/B Testing, Shadow And Feature Flags
+    - Progressive Delivery Tooling
+    - Rollback Limits And Compatible Changes
     playground: true
     module_lab: true
     diagrams: []
@@ -77,6 +88,9 @@ sections:
     outline:
     - Logs, Exits And Crash Loops
     - Configuration, Dependencies And Request Failures
+    - Pod Lifecycle States And Status Reasons
+    - Probes And Health Failures
+    - Logs And Events At Scale
     playground: true
     module_lab: true
     diagrams: []
@@ -90,6 +104,9 @@ sections:
     outline:
     - Intended Versions And Observed Progress
     - Reproduce, Correct And Verify
+    - Image And Registry Failures
+    - Rollback Decisions And Fix-Forward
+    - Post-Release Verification And Incident Notes
     playground: true
     module_lab: true
     diagrams: []
