@@ -5,7 +5,7 @@ kind: question_bank
 id: ats039-020-05
 course_id: ATS039
 exam_code: KCNA
-status: draft
+status: alpha
 provenance: Original practice material; not official examination questions.
 scope:
   type: section
